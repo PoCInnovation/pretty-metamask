@@ -1,47 +1,53 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+  import VerticalNavbar from "@/components/VerticalNavbar.vue";
+  import ERC from "@/components/ERC.vue";
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div id="container">
+    <header>
+    </header>
+    <main>
+      <VerticalNavbar />
+      <div id="info">
+        <div />
+        <ERC />
+        <div id="transactions"></div>
+        <div />
+      </div>
+    </main>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
+  #container {
+    height: 100vh;
+    background-color: rgb(3, 3, 3);
+  }
   header {
+    height:10vh;
+    background-color: rgb(25, 25, 25);
+    color: white;
+    width: 100vw;
+    border-bottom: 1px solid rgb(3, 3, 3);
+  }
+  main {
     display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+    flex-direction: row;
+    width: 100vw;
+    height: 90vh;
   }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
+  #info {
     display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
   }
-}
+  #transactions {
+    width: 27.91vw;
+    height: 80vh;
+    background-color: rgb(25, 25, 25);
+    border-radius: 20px;
+  }
 </style>

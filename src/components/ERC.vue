@@ -1,0 +1,45 @@
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'ERC',
+});
+</script>
+
+<script setup lang="ts">
+import TabsERC from './Tabs.vue';
+import Token from './Token.vue';
+import NFT from './NFT.vue';
+import AddBtn from './AddBtn.vue'
+import { ref } from 'vue';
+
+const currentTab = ref('Token')
+
+const handleTabChange = (newTab: string) => {
+  currentTab.value = newTab
+}
+</script>
+
+<template>
+  <div id="middle">
+    <div id="actions"></div>
+    <div id="ERC">
+    <TabsERC @tab-change="handleTabChange" />
+      <Token v-if="currentTab === 'Token'" />
+      <NFT v-else />
+      <AddBtn :label="currentTab" />
+    </div>
+  </div>
+</template>
+
+<style>
+  #middle {
+    width: 45.347vw;
+    height: 80vh;
+    background-color: rgb(25, 25, 25);
+    border-radius: 20px;
+  }
+  #actions {
+    height: 45%;
+  }
+</style>
