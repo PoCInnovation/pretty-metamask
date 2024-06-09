@@ -10,24 +10,18 @@ export default defineComponent({
 import TabsERC from './Tabs.vue';
 import Token from './Token.vue';
 import NFT from './NFT.vue';
-import AddBtn from './AddBtn.vue'
 import { ref } from 'vue';
 
 const currentTab = ref('Token')
-
-const handleTabChange = (newTab: string) => {
-  currentTab.value = newTab
-}
 </script>
 
 <template>
   <div id="middle">
     <div id="actions"></div>
     <div id="ERC">
-    <TabsERC @tab-change="handleTabChange" />
+    <TabsERC @tab-change="currentTab = $event" />
       <Token v-if="currentTab === 'Token'" />
       <NFT v-else />
-      <AddBtn :label="currentTab" />
     </div>
   </div>
 </template>

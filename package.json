@@ -13,7 +13,6 @@
     "format": "prettier --write src"
   },
   "dependencies": {
-    "@covalenthq/client-viem-sdk": "^0.1.0",
     "viem": "^2.13.7",
     "vue": "^3.4.21"
   },

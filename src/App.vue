@@ -1,11 +1,30 @@
 <script setup lang="ts">
-  import VerticalNavbar from "@/components/VerticalNavbar.vue";
-  import ERC from "@/components/ERC.vue";
+  import VerticalNavbar from "./components/VerticalNavbar.vue";
+  import { createWalletClient, custom } from 'viem'
+  import { wagmiContract } from './contract'
+  import { client } from './client'
+  import { sepolia } from 'viem/chains'
+  import 'viem/window'
+  import ERC from "./components/ERC.vue";
+  import { ref } from "vue";
+
+  const walletClient = createWalletClient({
+    chain: sepolia,
+    transport: custom(window.ethereum!)
+  });
+
+  const wallet = ref();
+
+  const connect = async () => {
+    wallet.value = await walletClient.requestAddresses();
+  }
 </script>
 
 <template>
   <div id="container">
     <header>
+      <button v-if="!wallet" @click="connect">Connect Wallet</button>
+      <p v-else >{{ wallet[0] }}</p>
     </header>
     <main>
       <VerticalNavbar />
