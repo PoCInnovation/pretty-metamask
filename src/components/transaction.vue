@@ -1,16 +1,20 @@
 
 <template>
-    <div class="box">
-        <div class="icone"></div>
+    <div class="box" @click="debug()">
+        <div class="icone">
+            <svg v-if="fromMe" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 160c-17.7 0-32-14.3-32-32s14.3-32 32-32H544c17.7 0 32 14.3 32 32V288c0 17.7-14.3 32-32 32s-32-14.3-32-32V205.3L342.6 374.6c-12.5 12.5-32.8 12.5-45.3 0L192 269.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160c12.5-12.5 32.8-12.5 45.3 0L320 306.7 466.7 160H384z"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 352c-17.7 0-32 14.3-32 32s14.3 32 32 32H544c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32s-32 14.3-32 32v82.7L342.6 137.4c-12.5-12.5-32.8-12.5-45.3 0L192 242.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0L320 205.3 466.7 352H384z"/></svg>
+        </div>
         <div class="info">
-            <h4 v-if="props.from">Sent {{ transInfos.value }} {{ transInfos.devise }}</h4>
-            <h4 v-else>Receive {{ transInfos.value }} {{ transInfos.devise }}</h4>
-            <h5 v-if="props.from">{{ transInfos.date }} to {{ reduceHashSize(transInfos.to) }}</h5>
+            <h4 v-if="fromMe">Sent {{ transInfos.value }} {{ transInfos.devise }}</h4>
+            <h4 v-else>Received {{ transInfos.value }} {{ transInfos.devise }}</h4>
+            <h5 v-if="fromMe">{{ transInfos.date }} to {{ reduceHashSize(transInfos.to) }}</h5>
             <h5 v-else>{{ transInfos.date }} from {{ reduceHashSize(transInfos.from) }}</h5>
         </div>
         <div class="status">
             <h5>Status</h5>
-            <i>{{ transInfos.status }}</i>
+            <svg style="fill: #33BF41" v-if="transInfos.status == 'success'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+            <svg style="fill: #D72F2F" v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
         </div>
     </div>
 </template>
@@ -18,13 +22,18 @@
 <script setup lang="ts">
 import { pubClient, x } from '../main';
 import { ref, onMounted } from 'vue';
-import { formatEther } from 'viem'
+import { formatEther, getContract } from 'viem'
+import { symbol, Transfer, } from '@abimate/openzeppelin/ERC20';
 
 const props = defineProps({
     hash: String,
     devise: String,
     from: Boolean
 })
+
+const ERC20 = [symbol, Transfer]
+const fromMe = ref(props.from)
+
 
 const transInfos = ref({
     hash: "",
@@ -43,6 +52,10 @@ const reduceHashSize = (hash: string) => {
     return `${hash.slice(0, 6)}...${hash.slice(-4)}`
 }
 
+const debug = () => {
+    console.log(transInfos.value)
+}
+
 const getDateFormated = (timestamp: number) => {
     let date = new Date(timestamp * 1000);
     let options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -52,6 +65,34 @@ const getDateFormated = (timestamp: number) => {
 
 const getInfos = () => {
     getTransactionInfos(props.hash as `0x${string}`)
+}
+
+// TODO: régler le trie des transactions et les infos des transaction affichées
+
+const getErc20Infos = async (transactionInfos: any, transactionReceipt: any, transInfos: any) => {
+    // console.log("transactionInfos:", transactionInfos)
+    // console.log("transactionReceipt:", transactionReceipt)
+    // console.log("contract address: ", transactionReceipt.logs[0].address)
+    try {
+        const token = getContract({
+            address: transactionReceipt.logs[0].address,
+            abi: ERC20,
+            client: pubClient
+        })
+        transInfos.value.devise = await token.read.symbol()
+        const logs = await pubClient.getContractEvents({
+            abi: ERC20,
+            address: transactionReceipt.logs[0].address,
+            fromBlock: transactionInfos.blockNumber,
+            toBlock: transactionInfos.blockNumber,
+            eventName: "Transfer"
+        })
+        // console.log("logs:", logs)
+        // console.log(transInfos.value)
+        transInfos.value.value = formatEther(logs[0].args.value as bigint)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const getTransactionInfos = async (transactionHash: `0x${string}`) => {
@@ -83,6 +124,8 @@ const getTransactionInfos = async (transactionHash: `0x${string}`) => {
     transInfos.value.value = formatEther(transactionInfos.value)
     transInfos.value.status = transactionReceipt.status
     transInfos.value.date = getDateFormated(transInfos.value.timestamp)
+    if (transInfos.value.devise == undefined)
+        await getErc20Infos(transactionInfos, transactionReceipt, transInfos)
     return transactionInfos
 }
 
@@ -94,18 +137,22 @@ onMounted(() => {
 <style scoped>
 .box {
     display: flex;
-    justify-content: center;
-    align-items: space-between;
+    justify-content: space-between;
+    align-items: center;
     background-color: transparent;
     height: 75px;
-    width: 95%;
+    width: 100%;
     margin: 10px 0;
 }
 
 .icone {
-    background-color: red;
     height: 100%;
-    width: 20%;
+    width: 15%;
+    padding: 15px;
+}
+
+.icone svg {
+    fill: #1E6BDE;
 }
 
 .info {
@@ -115,7 +162,7 @@ onMounted(() => {
     justify-content: center;
     align-items: flex-start;
     height: 100%;
-    width: 60%;
+    width: 70%;
 }
 
 .status {
@@ -123,7 +170,7 @@ onMounted(() => {
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 20%;
+    width: 15%;
 }
 
 .info h4 {
@@ -142,6 +189,11 @@ onMounted(() => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.status svg {
+    height: 30px;
+    width: 30px;
 }
 
 .status h5 {
