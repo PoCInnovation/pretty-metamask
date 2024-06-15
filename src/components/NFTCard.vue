@@ -19,9 +19,10 @@
 
 <template>
   <div id="card">
-    <img v-if="contentType && contentType.substring(0, 5) === 'image'" :src="image" alt="image">
-    <div v-else id="video">
-    </div>
+    <img v-if="!contentType || contentType.substring(0, 5) === 'image'" :src="image" alt="NFT">
+    <video v-else id="video" loop autoplay muted>
+      <source :src="image"/>
+    </video>
     <div>
       <p id="title">{{ name }}</p>
       <p id="desc" v-if="description">{{ truncate(description, 100) }}</p>
@@ -36,7 +37,6 @@
     margin-right: 26px;
     border-radius: 20px;
     overflow: hidden;
-    background-color: #1E6BDE;
   }
   #card {
     display:flex;

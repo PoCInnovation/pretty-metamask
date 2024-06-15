@@ -36,7 +36,7 @@ export default defineComponent({
 <style scoped>
   #tabs {
     border: 1px solid #4E4E4E;
-    height: 40px;
+    height: 4vh;
     border-radius: 8px;
     display: flex;
     flex-direction: row;

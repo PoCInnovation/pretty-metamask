@@ -6,7 +6,8 @@
     name: 'NFT',
   })
 
-  const NFTsList = await getNFTsForOwner("0x5dEccD005df66Cdd2F0b668610709e562eb3a00e", "eth-mainnet")
+  const NFTsList = await getNFTsForOwner("0x79b505CAE4d1Ec0178EE7F375A1053971032E159", "eth-mainnet")
+  console.log(NFTsList)
 </script>
 
 <script setup lang="ts">
@@ -23,26 +24,27 @@
    <div v-for="NFT in NFTsList" :key="NFT.id">
      <NFTCard v-if="NFT.tokenType === 'ERC721' && NFT.name" :name="NFT.name" :description="NFT.description" :content-type="NFT.image.contentType" :image="NFT.image.originalUrl"/>
    </div>
+    <AddBtn :label="'NFT'" @click="dialogVisible = true" id="add-btn"/>
   </div>
-  <AddBtn :label="'NFT'" @click="dialogVisible = true"/>
   <AddDialog v-if="dialogVisible" :visible="dialogVisible" @close-dialog="dialogVisible = false" @data-retrieved="handleDataRetrieved"/>
 </template>
 
 <style scoped>
+  #add-btn {
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    bottom: 1vh;
+  }
   #container {
     margin-top: 3.9vh;
-    margin-bottom: 2.63vh;
     margin-inline: 15px;
-    height: 27vh;
+    height: 36vh;
     overflow: scroll;
-    position: relative;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
-  #container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  #container::-webkit-scrollbar {
+    display: none;
   }
 </style>

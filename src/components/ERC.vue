@@ -34,6 +34,6 @@ const currentTab = ref('Token')
     border-radius: 20px;
   }
   #actions {
-    height: 45%;
+    height: 36vh;
   }
 </style>
