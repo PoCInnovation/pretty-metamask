@@ -33,10 +33,10 @@
 <style scoped>
   #video {
     width: 80px;
-    height: 80px;
+    height: 100%;
+    object-fit: cover;
     margin-right: 26px;
     border-radius: 20px;
-    overflow: hidden;
   }
   #card {
     display:flex;
