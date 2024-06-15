@@ -9,17 +9,25 @@
       contentType: String,
       image: String
     },
+    data() {
+      return {
+        imgSrc: this.image
+      }
+    },
     methods: {
       truncate(str: string, n: number) {
         return str.length > n ? str.slice(0, n - 1) + '...' : str;
       },
+      badUrl() {
+        this.imgSrc = '/src/assets/default.png';
+      }
     }
   });
 </script>
 
 <template>
   <div id="card">
-    <img v-if="!contentType || contentType.substring(0, 5) === 'image'" :src="image" alt="NFT">
+    <img v-if="!contentType || contentType.substring(0, 5) === 'image'" :src="imgSrc" @error="badUrl" alt="NFT">
     <video v-else id="video" loop autoplay muted>
       <source :src="image"/>
     </video>
