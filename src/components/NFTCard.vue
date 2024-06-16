@@ -19,10 +19,21 @@
       <p id="desc" v-if="metadata.description">{{ truncate(metadata.description, 100) }}</p>
     </div>
   </div>
-<!--  <popUpNFT v-if="popUp" />-->
+  <Transition>
+    <popUpNFT v-if="popUp" popUp :metadata="metadata" @close-popUp="popUp = false"/>
+  </Transition>
 </template>
 
 <style scoped>
+  .v-enter-active,
+  .v-leave-active {
+    transition: opacity 0.2s ease;
+  }
+
+  .v-enter-from,
+  .v-leave-to {
+    opacity: 0;
+  }
   #video {
     width: 80px;
     height: 100%;
