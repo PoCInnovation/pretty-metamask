@@ -1,28 +1,21 @@
-<script lang="ts">
-  import { defineComponent } from 'vue'
-  import { getNFTsForOwner} from '@/getNFTsForOwner'
-
-  export default defineComponent({
-    name: 'NFT',
-  })
-
-  const NFTsList = await getNFTsForOwner("0x79b505CAE4d1Ec0178EE7F375A1053971032E159", "eth-mainnet")
-  console.log(NFTsList)
-</script>
-
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { onMounted, ref } from 'vue'
   import AddDialog from '@/components/AddDialog.vue'
   import AddBtn from '@/components/AddBtn.vue'
   import NFTCard from '@/components/NFTCard.vue'
+  import { getNFTsForOwner } from '@/getNFTsForOwner'
 
   const dialogVisible = ref(false)
+  const NFTsList = ref()
+  onMounted(async () => {
+    NFTsList.value = await getNFTsForOwner("0x79b505CAE4d1Ec0178EE7F375A1053971032E159", "eth-mainnet");
+  })
 </script>
 
 <template>
   <div id="container">
    <div v-for="NFT in NFTsList" :key="NFT.id">
-     <NFTCard v-if="NFT.tokenType === 'ERC721' && NFT.name" :name="NFT.name" :description="NFT.description" :content-type="NFT.image.contentType" :image="NFT.image.originalUrl"/>
+     <NFTCard v-if="NFT.tokenType === 'ERC721' && NFT.name" :metadata="NFT"/>
    </div>
     <AddBtn :label="'NFT'" @click="dialogVisible = true" id="add-btn"/>
   </div>

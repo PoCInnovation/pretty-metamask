@@ -1,41 +1,25 @@
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import popUpNFT from '@/components/PopUpNFT.vue'
+  import { ref } from 'vue'
 
-  export default defineComponent({
-    name: 'NFTCard',
-    props: {
-      name: String,
-      description: String,
-      contentType: String,
-      image: String
-    },
-    data() {
-      return {
-        imgSrc: this.image
-      }
-    },
-    methods: {
-      truncate(str: string, n: number) {
-        return str.length > n ? str.slice(0, n - 1) + '...' : str;
-      },
-      badUrl() {
-        this.imgSrc = '/src/assets/default.png';
-      }
-    }
-  });
+  const props = defineProps(['metadata'])
+  const popUp = ref(false)
+  const imgSrc = ref(props.metadata.image.originalUrl)
+  const truncate = (str: string, n: number) => str.length > n ? str.slice(0, n - 1) + '...' : str;
 </script>
 
 <template>
   <div id="card">
-    <img v-if="!contentType || contentType.substring(0, 5) === 'image'" :src="imgSrc" @error="badUrl" alt="NFT">
-    <video v-else id="video" loop autoplay muted>
-      <source :src="image"/>
+    <img v-if="!metadata.contentType || metadata.contentType.substring(0, 5) === 'image'" :src="imgSrc" @error="imgSrc = '/src/assets/default.png'" alt="image" @click="popUp = true">
+    <video v-else id="video" loop autoplay muted @click="popUp = true">
+      <source :src="metadata.image.orginialUrl"/>
     </video>
     <div>
-      <p id="title">{{ name }}</p>
-      <p id="desc" v-if="description">{{ truncate(description, 100) }}</p>
+      <p id="title">{{ metadata.name }}</p>
+      <p id="desc" v-if="metadata.description">{{ truncate(metadata.description, 100) }}</p>
     </div>
   </div>
+<!--  <popUpNFT v-if="popUp" />-->
 </template>
 
 <style scoped>
