@@ -20,7 +20,7 @@
     </div>
   </div>
   <Transition>
-    <popUpNFT v-if="popUp" popUp :metadata="metadata" @close-popUp="popUp = false"/>
+    <popUpNFT v-if="popUp" :metadata="metadata" @close-popUp="popUp = false"/>
   </Transition>
 </template>
 

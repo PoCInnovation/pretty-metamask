@@ -7,8 +7,12 @@
 
   const dialogVisible = ref(false)
   const NFTsList = ref()
+  let importedNFTs = window.localStorage.getItem('ImportedNFTs')
   onMounted(async () => {
     NFTsList.value = await getNFTsForOwner("0x79b505CAE4d1Ec0178EE7F375A1053971032E159", "eth-mainnet");
+    if (importedNFTs) {
+      importedNFTs = JSON.parse(importedNFTs)
+    }
   })
 </script>
 
@@ -17,9 +21,12 @@
    <div v-for="NFT in NFTsList" :key="NFT.id">
      <NFTCard v-if="NFT.tokenType === 'ERC721' && NFT.name" :metadata="NFT"/>
    </div>
+    <div v-for="NFT in importedNFTs" :key="NFT.id">
+      <NFTCard v-if="NFT.tokenType === 'ERC721' && NFT.name" :metadata="NFT"/>
+    </div>
     <AddBtn :label="'NFT'" @click="dialogVisible = true" id="add-btn"/>
   </div>
-  <AddDialog v-if="dialogVisible" :visible="dialogVisible" @close-dialog="dialogVisible = false" @data-retrieved="handleDataRetrieved"/>
+  <AddDialog v-if="dialogVisible" @close-dialog="dialogVisible = false"/>
 </template>
 
 <style scoped>

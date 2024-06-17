@@ -1,15 +1,93 @@
+<script setup lang="ts">
+  import { ref } from 'vue'
+  import { getNFTMetadata } from '@/getNFTMetadata'
+  import { addImportedNFTs} from '@/updateWallet'
+  import PopUpNFT from '@/components/PopUpNFT.vue'
+
+  const emit = defineEmits(['close-dialog'])
+  const smartContract = ref('0x0af85e2dee602b0a14d50f4fc1096c2f7fbe60f2')
+  const tokenID = ref(102)
+  const metadata = ref(null)
+  const error = ref(false)
+  const displayImported = ref(false)
+  const addNFT = async () => {
+    metadata.value = await getNFTMetadata(smartContract.value, tokenID.value, "eth-mainnet")
+    error.value = addImportedNFTs(metadata.value)
+    if (!error.value) {
+      displayImported.value = true
+    }
+  }
+  const closeDialog = () => {
+    displayImported.value = false;
+    emit('close-dialog')
+  }
+</script>
+
 <template>
   <div id="transparent">
     <div id="dialog">
-      <input v-model="smartContract" placeholder="Smart contract"/>
-      <input v-model="tokenID" placeholder="Token ID"/>
-      <button @click="getTokenURI">Add</button>
-      <button @click="closeDialog">Cancel</button>
+      <div :style="{marginBottom:'2vh'}">
+        <label>Smart contract</label>
+        <input v-model="smartContract"/>
+      </div>
+      <div :style="{marginBottom:'2vh', display:'flex', flexDirection:'column'}">
+        <label>Token Id</label>
+        <input v-model="tokenID" :style="{width:'50%'}"/>
+      </div>
+      <div id="btn">
+        <button @click="addNFT">Import</button>
+        <button @click="emit('close-dialog')">Cancel</button>
+      </div>
+      <p v-if="error">This NFT is already imported.</p>
+      <Transition>
+        <PopUpNFT v-if="displayImported" :metadata="metadata" @close-popUp="closeDialog"/>
+      </Transition>
     </div>
   </div>
 </template>
 
 <style scoped>
+  .v-enter-active,
+  .v-leave-active {
+    transition: opacity 0.2s ease;
+  }
+
+  .v-enter-from,
+  .v-leave-to {
+    opacity: 0;
+  }
+  button {
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    background: #1E6BDE;
+    color: white;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #1E6BDE;
+  }
+  #btn {
+    display: flex;
+    justify-content: space-between;
+  }
+  label {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #535353;
+    background: none;
+    color: white;
+  }
   #transparent {
     position: absolute;
     display: flex;
@@ -24,54 +102,10 @@
   }
   #dialog {
     width: 30vw;
-    height: 60vh;
     background-color: rgb(25, 25, 25);
     border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
   }
 </style>
-
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { client } from '@/client'
-import { wagmiContract } from '@/contract'
-
-export default defineComponent({
-  name: 'AddDialog',
-  props: {
-    visible: Boolean,
-  },
-  setup() {
-    const smartContract = ref('0x57AD875bA75C17AF7a2b3068a9Fa22952797E856')
-    const tokenID = ref('2')
-
-    return {
-      smartContract,
-      tokenID
-    }
-  },
-  methods: {
-    closeDialog() {
-      this.$emit('close-dialog')
-    },
-    async getTokenURI() {
-      try {
-        const tokenURI = await client.readContract({
-          ...wagmiContract(this.smartContract),
-          functionName: 'tokenURI',
-          args: [this.tokenID],
-        })
-        fetch('https://ipfs.io/ipfs/' + tokenURI.replace('ipfs://', ''))
-          .then(response => response.json())
-          .then(data => {
-            this.$emit('data-retrieved', data)
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-      } catch (error) {
-        console.error(error)
-      }
-    }
-  }
-});
-</script>
