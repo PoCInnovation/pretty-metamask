@@ -11,13 +11,14 @@ import TabsERC from './Tabs.vue';
 import Token from './Token.vue';
 import NFT from './NFT.vue';
 import { ref } from 'vue';
+import Actions from './UserActions.vue';
 
 const currentTab = ref('Token')
 </script>
 
 <template>
   <div id="middle">
-    <div id="actions"></div>
+    <Actions />
     <div id="ERC">
     <TabsERC @tab-change="currentTab = $event" />
       <Token v-if="currentTab === 'Token'" />
