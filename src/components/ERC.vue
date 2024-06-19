@@ -12,12 +12,14 @@ import Token from './Token.vue';
 import NFT from './NFT.vue';
 import { ref } from 'vue';
 import Actions from './UserActions.vue';
+import UserProfile from './UserProfile.vue'
 
 const currentTab = ref('Token')
 </script>
 
 <template>
   <div id="middle">
+    <UserProfile />
     <Actions />
     <div id="ERC">
     <TabsERC @tab-change="currentTab = $event" />
@@ -33,8 +35,6 @@ const currentTab = ref('Token')
     height: 80vh;
     background-color: rgb(25, 25, 25);
     border-radius: 20px;
-  }
-  #actions {
-    height: 36vh;
+    overflow: hidden;
   }
 </style>

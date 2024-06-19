@@ -24,6 +24,7 @@
     padding-inline: 42px;
     padding-block: 32px;
     display: flex;
+    height: 11vh;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
