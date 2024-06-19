@@ -13,6 +13,7 @@ import NFT from './NFT.vue';
 import { ref } from 'vue';
 import Actions from './UserActions.vue';
 import UserProfile from './UserProfile.vue'
+import UserInfos from '@/components/UserInfos.vue'
 
 const currentTab = ref('Token')
 </script>
@@ -20,6 +21,9 @@ const currentTab = ref('Token')
 <template>
   <div id="middle">
     <UserProfile />
+    <Suspense>
+      <UserInfos />
+    </Suspense>
     <Actions />
     <div id="ERC">
     <TabsERC @tab-change="currentTab = $event" />

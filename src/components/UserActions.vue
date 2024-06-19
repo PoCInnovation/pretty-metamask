@@ -8,6 +8,6 @@
 
 <style scoped>
   #container {
-    height: 25vh;
+    height: 7.8vh;
   }
 </style>
