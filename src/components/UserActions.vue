@@ -20,6 +20,9 @@
     font-size: 20px;
     margin-inline: 10px;
   }
+  button:hover {
+    cursor: pointer;
+  }
   #container {
     height: 7.8vh;
     display: flex;
