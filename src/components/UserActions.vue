@@ -11,21 +11,19 @@
 
 <style scoped>
   button {
-    width: 8.698vw;
-    height: 39px;
+    width: 100%;
+    height: 3.9vh;
     border-radius: 10px;
     border: none;
     background-color: #1E6BDE;
     color: white;
     font-size: 20px;
+    margin-inline: 10px;
   }
   #container {
     height: 7.8vh;
     display: flex;
-    align-items: center;
     justify-content: center;
-  }
-  #sellBTN {
-    margin-inline: 21px;
+    padding-inline: 44px;
   }
 </style>
