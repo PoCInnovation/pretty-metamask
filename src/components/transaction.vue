@@ -33,7 +33,6 @@ const props = defineProps({
 
 const ERC20 = [symbol, Transfer]
 const fromMe = ref(props.from)
-const infosOpen = ref(false)
 
 const transInfos = ref({
     hash: "",
