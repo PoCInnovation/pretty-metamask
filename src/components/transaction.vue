@@ -2,8 +2,8 @@
 <template>
     <div class="box" @click="debug()">
         <div class="icone">
-            <svg v-if="fromMe" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 160c-17.7 0-32-14.3-32-32s14.3-32 32-32H544c17.7 0 32 14.3 32 32V288c0 17.7-14.3 32-32 32s-32-14.3-32-32V205.3L342.6 374.6c-12.5 12.5-32.8 12.5-45.3 0L192 269.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160c12.5-12.5 32.8-12.5 45.3 0L320 306.7 466.7 160H384z"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 352c-17.7 0-32 14.3-32 32s14.3 32 32 32H544c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32s-32 14.3-32 32v82.7L342.6 137.4c-12.5-12.5-32.8-12.5-45.3 0L192 242.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0L320 205.3 466.7 352H384z"/></svg>
+            <svg style="fill: #D72F2F" v-if="fromMe" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 160c-17.7 0-32-14.3-32-32s14.3-32 32-32H544c17.7 0 32 14.3 32 32V288c0 17.7-14.3 32-32 32s-32-14.3-32-32V205.3L342.6 374.6c-12.5 12.5-32.8 12.5-45.3 0L192 269.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160c12.5-12.5 32.8-12.5 45.3 0L320 306.7 466.7 160H384z"/></svg>
+            <svg style="fill: #33BF41" v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 352c-17.7 0-32 14.3-32 32s14.3 32 32 32H544c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32s-32 14.3-32 32v82.7L342.6 137.4c-12.5-12.5-32.8-12.5-45.3 0L192 242.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0L320 205.3 466.7 352H384z"/></svg>
         </div>
         <div class="info">
             <h4 v-if="fromMe">Sent {{ transInfos.value }} {{ transInfos.devise }}</h4>
@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { pubClient, x } from '../main';
+import { account, pubClient, x } from '../main';
 import { ref, onMounted } from 'vue';
 import { formatEther, getContract } from 'viem'
 import { symbol, Transfer, } from '@abimate/openzeppelin/ERC20';
@@ -33,7 +33,7 @@ const props = defineProps({
 
 const ERC20 = [symbol, Transfer]
 const fromMe = ref(props.from)
-
+const infosOpen = ref(false)
 
 const transInfos = ref({
     hash: "",
@@ -49,6 +49,8 @@ const transInfos = ref({
 })
 
 const reduceHashSize = (hash: string) => {
+    if (hash == account.toLowerCase())
+        return "Me"
     return `${hash.slice(0, 6)}...${hash.slice(-4)}`
 }
 
@@ -66,8 +68,6 @@ const getDateFormated = (timestamp: number) => {
 const getInfos = () => {
     getTransactionInfos(props.hash as `0x${string}`)
 }
-
-// TODO: régler le trie des transactions et les infos des transaction affichées
 
 const getErc20Infos = async (transactionInfos: any, transactionReceipt: any, transInfos: any) => {
     // console.log("transactionInfos:", transactionInfos)
@@ -89,6 +89,7 @@ const getErc20Infos = async (transactionInfos: any, transactionReceipt: any, tra
         })
         // console.log("logs:", logs)
         // console.log(transInfos.value)
+        transInfos.value.from = logs[0].args.from
         transInfos.value.value = formatEther(logs[0].args.value as bigint)
     } catch (error) {
         console.log(error)

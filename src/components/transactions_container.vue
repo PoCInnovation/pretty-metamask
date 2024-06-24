@@ -34,16 +34,35 @@ const walletLink = () => {
     window.open(`https://sepolia.etherscan.io/address/${account}`)
 }
 
+const getUniqueTransactions = (transactions: any): Transaction[] => {
+    let trans: Transaction[] = [];
+    let unique = true;
+    for (const t of transactions) {
+        unique = true;
+        for (const tr of trans) {
+            if (t.hash == tr.hash) {
+                unique = false;
+                break;
+            }
+        }
+        if (unique)
+            trans.push(t);
+    }
+    return trans;
+}
+
 const getLastTransactions = (transactions: Transaction[]): Transaction[] => {
     const sortedTransactions = transactions.sort((a, b) => b.blockNb - a.blockNb);
-    const last10Transactions = sortedTransactions.slice(0, 7);
+    const uniqueSortedTransactions = getUniqueTransactions(sortedTransactions);
+    const last10Transactions = uniqueSortedTransactions.slice(0, 7);
     return last10Transactions;
 }
 
 const btn = async () => {
     let transactions = await getTransactionsFrom()
+    let ls: Transaction[] = []
     for (const transaction of transactions) {
-        transactionshash.value.push({
+        ls.push({
             hash: transaction.hash,
             devise: transaction.asset,
             from: false,
@@ -52,15 +71,15 @@ const btn = async () => {
     }
     transactions = await getTransactionsTo()
     for (const transaction of transactions) {
-        transactionshash.value.push({
+        ls.push({
             hash: transaction.hash,
             devise: transaction.asset,
             from: true,
             blockNb: fromHex(transaction.blockNum, 'number')
         });
     }
-    transactionshash.value = getLastTransactions(transactionshash.value)
-    console.log("transactions: ", transactionshash.value)
+    transactionshash.value = getLastTransactions(ls)
+    // console.log("transactions: ", transactionshash.value)
 }
 
 const getTransactionsFrom = async () => {
@@ -81,7 +100,7 @@ const getTransactionsFrom = async () => {
 
     try {
         const transactions = (await x.post('/', data)).data.result.transfers
-        console.log("to: ", transactions)
+        // console.log("to me: ", transactions)
         return transactions
     } catch (error) {
         return []
@@ -106,7 +125,7 @@ const getTransactionsTo = async () => {
 
     try {
         const transactions = (await x.post('/', data)).data.result.transfers
-        console.log("from:", transactions)
+        // console.log("from me:", transactions)
         return transactions
     } catch (error) {
         return []
