@@ -1,6 +1,6 @@
 
 <template>
-    <div class="box" @click="debug()">
+    <div class="box" @click="openPopup()">
         <div class="icone">
             <svg style="fill: #D72F2F" v-if="fromMe" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 160c-17.7 0-32-14.3-32-32s14.3-32 32-32H544c17.7 0 32 14.3 32 32V288c0 17.7-14.3 32-32 32s-32-14.3-32-32V205.3L342.6 374.6c-12.5 12.5-32.8 12.5-45.3 0L192 269.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160c12.5-12.5 32.8-12.5 45.3 0L320 306.7 466.7 160H384z"/></svg>
             <svg style="fill: #33BF41" v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 352c-17.7 0-32 14.3-32 32s14.3 32 32 32H544c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32s-32 14.3-32 32v82.7L342.6 137.4c-12.5-12.5-32.8-12.5-45.3 0L192 242.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0L320 205.3 466.7 352H384z"/></svg>
@@ -17,6 +17,7 @@
             <svg style="fill: #D72F2F" v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
         </div>
     </div>
+    <transactionInfos v-if="popUp == true" :data="transInfos" @close-popUp="popUp = false" />
 </template>
 
 <script setup lang="ts">
@@ -24,6 +25,7 @@ import { account, pubClient, x } from '../main';
 import { ref, onMounted } from 'vue';
 import { formatEther, getContract } from 'viem'
 import { symbol, Transfer, } from '@abimate/openzeppelin/ERC20';
+import transactionInfos from './transactionInfos.vue';
 
 const props = defineProps({
     hash: String,
@@ -31,10 +33,29 @@ const props = defineProps({
     from: Boolean
 })
 
+const popUp = ref(false)
 const ERC20 = [symbol, Transfer]
 const fromMe = ref(props.from)
 
-const transInfos = ref({
+interface Transaction {
+    hash: string,
+    to: string,
+    from: string,
+    blockHash: string,
+    blockNumber: number,
+    value: string,
+    status: string,
+    timestamp: number,
+    date: string,
+    devise: string,
+    logs: {
+        transaction: any,
+        receipt: any,
+        erc20: any,
+    }
+}
+
+const transInfos = ref(<Transaction>{
     hash: "",
     to: "",
     from: "",
@@ -44,7 +65,12 @@ const transInfos = ref({
     status: "",
     timestamp: 0,
     date: "",
-    devise: props.devise
+    devise: props.devise,
+    logs: {
+        transaction: {},
+        receipt: {},
+        erc20: {},
+    }
 })
 
 const reduceHashSize = (hash: string) => {
@@ -53,8 +79,8 @@ const reduceHashSize = (hash: string) => {
     return `${hash.slice(0, 6)}...${hash.slice(-4)}`
 }
 
-const debug = () => {
-    console.log(transInfos.value)
+const openPopup = () => {
+    popUp.value = true
 }
 
 const getDateFormated = (timestamp: number) => {
@@ -69,9 +95,6 @@ const getInfos = () => {
 }
 
 const getErc20Infos = async (transactionInfos: any, transactionReceipt: any, transInfos: any) => {
-    // console.log("transactionInfos:", transactionInfos)
-    // console.log("transactionReceipt:", transactionReceipt)
-    // console.log("contract address: ", transactionReceipt.logs[0].address)
     try {
         const token = getContract({
             address: transactionReceipt.logs[0].address,
@@ -86,10 +109,10 @@ const getErc20Infos = async (transactionInfos: any, transactionReceipt: any, tra
             toBlock: transactionInfos.blockNumber,
             eventName: "Transfer"
         })
-        // console.log("logs:", logs)
-        // console.log(transInfos.value)
         transInfos.value.from = logs[0].args.from
+        transInfos.value.to = logs[0].args.to
         transInfos.value.value = formatEther(logs[0].args.value as bigint)
+        transInfos.value.logs.erc20 = logs
     } catch (error) {
         console.log(error)
     }
@@ -124,6 +147,8 @@ const getTransactionInfos = async (transactionHash: `0x${string}`) => {
     transInfos.value.value = formatEther(transactionInfos.value)
     transInfos.value.status = transactionReceipt.status
     transInfos.value.date = getDateFormated(transInfos.value.timestamp)
+    transInfos.value.logs.receipt = transactionReceipt
+    transInfos.value.logs.transaction = transactionInfos
     if (transInfos.value.devise == undefined)
         await getErc20Infos(transactionInfos, transactionReceipt, transInfos)
     return transactionInfos
@@ -143,6 +168,7 @@ onMounted(() => {
     height: 75px;
     width: 100%;
     margin: 10px 0;
+    cursor: pointer;
 }
 
 .icone {
