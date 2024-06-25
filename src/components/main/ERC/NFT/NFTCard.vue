@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import popUpNFT from '@/components/PopUpNFT.vue'
+  import popUpNFT from '@/components/main/ERC/NFT/PopUpNFT.vue'
   import { ref } from 'vue'
 
   const props = defineProps(['metadata'])

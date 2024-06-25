@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { account, pubClient, x } from '../main';
+import { account, pubClient, x } from '../../main';
 import { ref, onMounted } from 'vue';
 import { formatEther, getContract } from 'viem'
 import { symbol, Transfer, } from '@abimate/openzeppelin/ERC20';

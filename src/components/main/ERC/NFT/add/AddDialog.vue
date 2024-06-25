@@ -2,7 +2,7 @@
   import { ref } from 'vue'
   import { getNFTMetadata } from '@/getNFTMetadata'
   import { addImportedNFTs} from '@/updateWallet'
-  import PopUpNFT from '@/components/PopUpNFT.vue'
+  import PopUpNFT from '@/components/main/ERC/NFT/PopUpNFT.vue'
 
   const emit = defineEmits(['close-dialog'])
   const smartContract = ref('0x0af85e2dee602b0a14d50f4fc1096c2f7fbe60f2')

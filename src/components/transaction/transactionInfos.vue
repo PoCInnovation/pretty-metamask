@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { pubClient } from '../main';
+import { pubClient } from '../../main';
 import btn from './btn.vue';
 
 const props = defineProps({

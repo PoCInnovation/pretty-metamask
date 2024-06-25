@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue'
-  import AddDialog from '@/components/AddDialog.vue'
-  import AddBtn from '@/components/AddBtn.vue'
-  import NFTCard from '@/components/NFTCard.vue'
+  import AddDialog from '@/components/main/ERC/NFT/add/AddDialog.vue'
+  import AddBtn from '@/components/main/ERC/NFT/add/AddBtn.vue'
+  import NFTCard from '@/components/main/ERC/NFT/NFTCard.vue'
   import { getNFTsForOwner } from '@/getNFTsForOwner'
 
   const dialogVisible = ref(false)

@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import transaction from './transaction.vue'
-import { x, account } from '../main'
+import { x, account } from '../../main'
 import { fromHex } from 'viem'
 import { ref } from 'vue'
 import { onMounted } from 'vue';

@@ -9,7 +9,7 @@ const ETH = await exchangeRates('ETH').then((res: any) => res.data.rates.USD)
 <template>
   <div id="container">
     <div id="token">
-      <img src="../assets/eth_logo.png" alt="ETH" id="eth-logo"/>
+      <img src="../../../assets/eth_logo.png" alt="ETH" id="eth-logo"/>
       <div id="balance">
         <h1>{{ balance.toFixed(4) }} ETH</h1>
         <p>${{ (balance.toFixed(4) * ETH).toFixed(2) }} USD</p>
@@ -17,7 +17,7 @@ const ETH = await exchangeRates('ETH').then((res: any) => res.data.rates.USD)
     </div>
     <div id="exchange">
       <h2>1 ETH</h2>
-      <img src="../assets/arrow.svg" alt="arrow" id="arrow"/>
+      <img src="../../../assets/arrow.svg" alt="arrow" id="arrow"/>
       <h2>{{ ETH }} USD</h2>
     </div>
   </div>

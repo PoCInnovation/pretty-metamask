@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import Dots3Icon from "../assets/3DotsIcon.svg"
+  import Dots3Icon from "../../../assets/3DotsIcon.svg"
   import TooltipCopy from './TooltipCopy.vue'
 
   const address = '0x79b505CAE4d1Ec0178EE7F375A1053971032E159'
