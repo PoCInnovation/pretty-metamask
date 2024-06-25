@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import VerticalNavbar from "./components/VerticalNavbar.vue";
+  import transactions_container from "./components/transactions_container.vue";
   import ERC from "./components/ERC.vue";
 </script>
 
@@ -12,7 +13,9 @@
       <div id="info">
         <div />
         <ERC />
-        <div id="transactions"></div>
+        <div id="transactions">
+          <transactions_container />
+        </div>
         <div />
       </div>
     </main>
