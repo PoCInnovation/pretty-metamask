@@ -54,11 +54,13 @@ const getUniqueTransactions = (transactions: any): Transaction[] => {
 const getLastTransactions = (transactions: Transaction[]): Transaction[] => {
     const sortedTransactions = transactions.sort((a, b) => b.blockNb - a.blockNb);
     const uniqueSortedTransactions = getUniqueTransactions(sortedTransactions);
-    const last10Transactions = uniqueSortedTransactions.slice(0, 7);
+    const last10Transactions = uniqueSortedTransactions.slice(0, 8);
     return last10Transactions;
 }
 
 const btn = async () => {
+    while (!account)
+        await new Promise(r => setTimeout(r, 500));
     let transactions = await getTransactionsFrom()
     let ls: Transaction[] = []
     for (const transaction of transactions) {
@@ -134,7 +136,6 @@ const getTransactionsTo = async () => {
 
 onMounted(async () => {
     await btn();
-    console.log("test")
 })
 
 </script>

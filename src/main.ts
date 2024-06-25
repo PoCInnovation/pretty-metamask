@@ -19,7 +19,7 @@ const wal_client = createWalletClient({
     transport: custom(window.ethereum!),
 })
 
-const apiKey = "CNVeiwSNTQZjEpInhoAD7HdE5AbTNU5d"
+const apiKey = import.meta.env.VITE_ALCHEMY_API_KEY
 const baseURL = `https://eth-sepolia.g.alchemy.com/v2/${apiKey}`;
 const axiosURL = `${baseURL}`;
 
