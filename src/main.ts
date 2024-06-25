@@ -33,7 +33,7 @@ const ax = axios.create({
 const accounts = await wal_client.requestAddresses()
 console.log(accounts)
 
-export var pubClient = pub_client;
-export var walClient = wal_client;
-export var account = accounts[0];
-export var x = ax;
+export const pubClient = pub_client;
+export const walClient = wal_client;
+export const account = accounts[0];
+export const x = ax;
