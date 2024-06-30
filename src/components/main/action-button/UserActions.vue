@@ -3,9 +3,9 @@
 
 <template>
   <div id="container">
-    <button>Buy</button>
-    <button id="sellBTN">Sell</button>
+    <button>Send</button>
     <button>Swap</button>
+    <button>Bridge</button>
   </div>
 </template>
 
