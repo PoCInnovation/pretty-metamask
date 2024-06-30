@@ -61,4 +61,7 @@
     border-radius: 20px;
     margin-right: 26px;
   }
+  img:hover, #video:hover{
+    cursor: pointer;
+  }
 </style>
