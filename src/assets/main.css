@@ -33,5 +33,5 @@ a,
   font-weight: normal;
   font-style: normal;
   font-display: auto;
-  src: url('../../public/fonts/DMSans.ttf') format('truetype');
+  src: url('fonts/DMSans.ttf') format('truetype');
 }
