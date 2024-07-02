@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { getBalance } from '@/getBalance';
 import { exchangeRates } from '@/exchangeRates'
+import { account } from '@/main'
 
-const balance = await getBalance('0x79b505CAE4d1Ec0178EE7F375A1053971032E159').then((res: number) => Number(res) / Number(BigInt(1000000000000000000)))
+const balance = await getBalance(account).then((res: number) => Number(res) / Number(BigInt(1000000000000000000)))
 const ETH = await exchangeRates('ETH').then((res: any) => res.data.rates.USD)
 </script>
 

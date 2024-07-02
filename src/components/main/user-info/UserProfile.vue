@@ -1,8 +1,7 @@
 <script setup lang="ts">
   import Dots3Icon from "../../../assets/3DotsIcon.svg"
   import TooltipCopy from './TooltipCopy.vue'
-
-  const address = '0x79b505CAE4d1Ec0178EE7F375A1053971032E159'
+  import { account } from '@/main'
 </script>
 
 <template>
@@ -10,8 +9,8 @@
     <div>
       <h1 id="name">Main Account</h1>
       <div id="address">
-        <p>{{ address.slice(0, 18) }}</p>
-        <TooltipCopy :address="address"/>
+        <p>{{ account.slice(0, 18) }}</p>
+        <TooltipCopy :address="account"/>
       </div>
     </div>
     <img :src="Dots3Icon" alt="icon" />
