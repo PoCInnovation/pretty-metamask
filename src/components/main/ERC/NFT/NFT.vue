@@ -4,12 +4,13 @@
   import AddBtn from '@/components/main/ERC/NFT/add/AddBtn.vue'
   import NFTCard from '@/components/main/ERC/NFT/NFTCard.vue'
   import { getNFTsForOwner } from '@/getNFTsForOwner'
+  import { account } from '@/main'
 
   const dialogVisible = ref(false)
   const NFTsList = ref()
   let importedNFTs = window.localStorage.getItem('ImportedNFTs')
   onMounted(async () => {
-    NFTsList.value = await getNFTsForOwner("0x79b505CAE4d1Ec0178EE7F375A1053971032E159", "eth-mainnet");
+    NFTsList.value = await getNFTsForOwner(account, "eth-mainnet");
     if (importedNFTs) {
       importedNFTs = JSON.parse(importedNFTs)
     }
