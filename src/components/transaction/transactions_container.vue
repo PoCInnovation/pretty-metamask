@@ -161,8 +161,9 @@ main.transactions {
     width: 100%;
     height: 70px;
     color: white;
-    font-size: 40px;
+    font-size: 30px;
     margin-bottom: 10px;
+    margin-left: 25px;
     padding: 20px 0 20px 10px;
 }
 
