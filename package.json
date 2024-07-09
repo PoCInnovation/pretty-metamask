@@ -13,6 +13,12 @@
     "format": "prettier --write src"
   },
   "dependencies": {
+    "@abimate/openzeppelin": "^1.1.0",
+    "@abimate/solmate": "^1.1.0",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
+    "@headlessui/vue": "^1.7.22",
+    "axios": "^1.7.2",
+    "viem": "^2.13.8",
     "vue": "^3.4.21"
   },
   "devDependencies": {
