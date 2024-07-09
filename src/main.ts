@@ -1,6 +1,10 @@
 import './assets/main.css'
+import Loading from './LoadingPage.vue'
 
-import { createApp } from 'vue'
+const loading = createApp(Loading)
+loading.mount('#loading')
+
+import { createApp, nextTick } from 'vue'
 import App from './App.vue'
 import { createPublicClient, createWalletClient, http, custom } from 'viem'
 import { sepolia } from 'viem/chains'
@@ -37,3 +41,7 @@ export const account = accounts[0];
 export const x = ax;
 
 createApp(App).mount('#app')
+
+nextTick().then(() => {
+    loading.unmount()
+})
