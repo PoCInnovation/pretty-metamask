@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import VerticalNavbar from "./components/main/VerticalNavbar.vue";
+  import VerticalNavbar from "./components/wallet/verticalNavbar.vue";
   import transactions_container from "./components/transaction/transactions_container.vue";
   import ERC from "./components/main/ERC/ERC.vue";
 </script>
