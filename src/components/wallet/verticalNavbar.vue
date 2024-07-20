@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import walletCard from '@/components/walletCard.vue'
-import mnemonicPopUp from '@/components/mnemonicPopUp.vue'
+import walletCard from '@/components/wallet/walletCard.vue'
+import mnemonicPopUp from '@/components/wallet/mnemonicPopUp.vue'
 import { generateWallet } from '@/utils/wallet'
 
 interface account {
@@ -54,7 +54,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-80 h-[90vh] mt-[10vh] bg-background-gray text-white flex flex-col">
+  <div class="w-80 h-[90vh] bg-background-gray text-white flex flex-col">
     <div class="p-6 border-gray-700 flex items-center justify-center space-x-7">
       <img src="@/components/icons/wallet_icon.png" alt="wallet icon" class="h-7 w-8" />
       <span class="text-2xl">Wallets</span>

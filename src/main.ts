@@ -11,7 +11,6 @@ import { createPublicClient, createWalletClient, http, custom } from 'viem'
 import { sepolia } from 'viem/chains'
 import axios from 'axios';
 
-
 const pub_client = createPublicClient({
     chain: sepolia,
     transport: http(),
