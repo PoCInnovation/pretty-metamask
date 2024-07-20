@@ -1,4 +1,5 @@
 import './assets/main.css'
+import './index.css'
 import Loading from './LoadingPage.vue'
 
 const loading = createApp(Loading)
