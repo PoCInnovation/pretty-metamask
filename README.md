@@ -1,26 +1,25 @@
-> If you see this section, you've just created a repository using [PoC Innovation's Open-Source project template](https://github.com/PoCInnovation/open-source-project-template). Check the [getting started guide](./.github/getting-started.md).
+# Pretty Metamask
 
-# [PROJECT'S NAME]
-
-[Project's description]
-
-## How does it work?
-
-[Explain how this project is working]
+Metamask but prettier in Vue.js
 
 ## Getting Started
 
 ### Installation
 
-[Explain how to install all of the project's dependencies]
+```bash
+npm install
+```
+create a .env file at the root of the project and add your Alchemy API key like in the .env.sample file
 
 ### Quickstart
 
-[Explain how to run this project]
+```bash
+npm run dev
+```
 
 ### Usage
 
-[Explain how to use this project]
+Create or import a wallet, connect to it, and interact with the blockchain
 
 ## Get involved
 
@@ -31,11 +30,11 @@ If you're interested in how the project is organized at a higher level, please c
 ## Our PoC team ❤️
 
 Developers
-| [<img src="https://github.com/MrZalTy.png?size=85" width=85><br><sub>[Developer's name]</sub>](https://github.com/MrZalTy) | [<img src="https://github.com/MrZalTy.png?size=85" width=85><br><sub>[Developer's name]</sub>](https://github.com/MrZalTy) | [<img src="https://github.com/MrZalTy.png?size=85" width=85><br><sub>[Developer's name]</sub>](https://github.com/MrZalTy)
-| :---: | :---: | :---: |
+| [<img src="https://github.com/Intermarch3.png?size=85" width=85><br><sub>[Lucas Leclerc]</sub>](https://github.com/Intermarch3) | [<img src="https://github.com/Sacharbon.png?size=85" width=85><br><sub>[Sacha Dujardin]</sub>](https://github.com/Sacharbon) | [<img src="https://github.com/Bouboubz.png?size=85" width=85><br><sub>[Grégor Sternat]</sub>](https://github.com/Bouboubz) | [<img src="https://github.com/alexandreTimal.png?size=85" width=85><br><sub>[Alexandre Timal]</sub>](https://github.com/alexandreTimal)
+| :---: | :---: | :---: | :---: |
 
 Manager
-| [<img src="https://github.com/adrienfort.png?size=85" width=85><br><sub>[Manager's name]</sub>](https://github.com/adrienfort)
+| [<img src="https://github.com/Nfire2103.png?size=85" width=85><br><sub>[Nathan Flattin]</sub>](https://github.com/Nfire2103)
 | :---: |
 
 <h2 align=center>
