@@ -10,8 +10,8 @@
   ],
   "compilerOptions": {
     "composite": true,
+    "noEmit": false, // Allow emitting files
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-
     "baseUrl": "./pretty-metamask",
     "paths": {
       "@/*": ["./src/*"]
