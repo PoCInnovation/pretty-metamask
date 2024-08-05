@@ -1,56 +1,58 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import walletCard from '@/components/wallet/walletCard.vue'
-import mnemonicPopUp from '@/components/wallet/mnemonicPopUp.vue'
-import { generateWallet } from '@/utils/wallet'
+import { defineComponent } from 'vue';
+import { mapGetters, mapActions } from 'vuex';
+import walletCard from '@/components/wallet/walletCard.vue';
+import mnemonicPopUp from '@/components/wallet/mnemonicPopUp.vue';
+import { generateWallet } from '@/utils/wallet';
+import type { WalletClient } from 'viem';
 
-interface account {
-  name: string
-  address: string
-  mnemonic: string
+interface Account {
+  name: string;
+  address: string;
+  mnemonic: string;
+  wallet: WalletClient;
 }
 
 export default defineComponent({
-  name: "NavBar",
+  name: 'NavBar',
   components: {
     walletCard,
     mnemonicPopUp,
   },
+  computed: {
+    ...mapGetters(['accounts', 'selectedAccount', 'accountReducedAddresses']),
+    visibleMnemonicAccounts(): Account[] {
+      return this.accounts.filter(
+        (account: Account) => this.selectedAccount === account.address && this.isMnemonicVisible
+      );
+    },
+  },
   data() {
     return {
-      accounts: [] as account[],
-      selectedAccount: null as string | null,
-      isMnemonicVisible: false
-    }
-  },
-  computed: {
-    visibleMnemonicAccounts(): account[] {
-      return this.accounts.filter(account => this.selectedAccount === account.address && this.isMnemonicVisible)
-    }
+      isMnemonicVisible: false,
+    };
   },
   methods: {
-    addAccount() {
-      const { newWallet, mnemonic } = generateWallet()
-      const newAccount: account = {
+    ...mapActions(['addAccount', 'selectAccount']),
+    addAccountToStore() {
+      const { newWallet, mnemonic } = generateWallet();
+      const newAccount: Account = {
         name: `Account ${this.accounts.length + 1}`,
-        address: this.reduceAddress(newWallet.account.address),
-        mnemonic: mnemonic
-      }
-      this.accounts.push(newAccount)
-      this.selectedAccount = newAccount.address
-      this.isMnemonicVisible = true
+        address: newWallet.account.address,
+        mnemonic: mnemonic,
+        wallet: newWallet
+      };
+      this.addAccount(newAccount);
+      this.isMnemonicVisible = true;
     },
-    reduceAddress(address: string) {
-      return `${address.slice(0, 7)}...${address.slice(-5)}`
-    },
-    selectAccount(address: string) {
-      this.selectedAccount = address
+    selectAccountInStore(address: string) {
+      this.selectAccount(address);
     },
     closePopUp() {
-      this.isMnemonicVisible = false
-    }
-  }
-})
+      this.isMnemonicVisible = false;
+    },
+  },
+});
 </script>
 
 <template>
@@ -62,14 +64,14 @@ export default defineComponent({
     <div class="flex-1 overflow-y-auto">
       <div class="p-4 space-y-4">
         <walletCard
-          v-for="account in accounts"
+          v-for="account in accountReducedAddresses"
           :key="account.address"
           :accountName="account.name"
-          :accountAddress="account.address"
+          :accountAddress="account.reducedAddress"
           :isSelected="selectedAccount === account.address"
-          @select="selectAccount(account.address)"
+          @select="selectAccountInStore(account.address)"
         />
-        <div @click="addAccount" class="bg-background-gray rounded-2xl p-3 flex items-center justify-center border-gray-600 border hover:bg-gray-600">
+        <div @click="addAccountToStore" class="bg-background-gray rounded-2xl p-3 flex items-center justify-center border-gray-600 border hover:bg-gray-600">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
@@ -82,11 +84,11 @@ export default defineComponent({
     </div>
   </div>
   <div v-if="isMnemonicVisible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <mnemonicPopUp
-        v-for="account in visibleMnemonicAccounts"
-        :key="account.address"
-        :mnemonic="account.mnemonic"
-        @close="closePopUp"
-      />
+    <mnemonicPopUp
+      v-for="account in visibleMnemonicAccounts"
+      :key="account.address"
+      :mnemonic="account.mnemonic"
+      @close="closePopUp"
+    />
   </div>
 </template>

@@ -1,27 +1,34 @@
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue'
-  import AddDialog from '@/components/main/ERC/NFT/add/AddDialog.vue'
-  import AddBtn from '@/components/main/ERC/NFT/add/AddBtn.vue'
-  import NFTCard from '@/components/main/ERC/NFT/NFTCard.vue'
-  import { getNFTsForOwner } from '@/getNFTsForOwner'
-  import { account } from '@/main'
+import { onMounted, ref, computed } from 'vue';
+import { useStore } from 'vuex';
+import AddDialog from '@/components/main/ERC/NFT/add/AddDialog.vue';
+import AddBtn from '@/components/main/ERC/NFT/add/AddBtn.vue';
+import NFTCard from '@/components/main/ERC/NFT/NFTCard.vue';
+import { getNFTsForOwner } from '@/getNFTsForOwner';
 
-  const dialogVisible = ref(false)
-  const NFTsList = ref()
-  let importedNFTs = window.localStorage.getItem('ImportedNFTs')
-  onMounted(async () => {
-    NFTsList.value = await getNFTsForOwner(account, "eth-mainnet");
-    if (importedNFTs) {
-      importedNFTs = JSON.parse(importedNFTs)
-    }
-  })
+const store = useStore();
+const account = computed(() => store.getters.selectedAccount);
+
+const dialogVisible = ref(false);
+const NFTsList = ref([]);
+let importedNFTs = window.localStorage.getItem('ImportedNFTs');
+
+onMounted(async () => {
+  if (account.value) {
+    NFTsList.value = await getNFTsForOwner(account.value, "eth-mainnet");
+  }
+
+  if (importedNFTs) {
+    importedNFTs = JSON.parse(importedNFTs);
+  }
+});
 </script>
 
 <template>
   <div id="container">
-   <div v-for="NFT in NFTsList" :key="NFT.id">
-     <NFTCard v-if="NFT.tokenType === 'ERC721' && NFT.name" :metadata="NFT"/>
-   </div>
+    <div v-for="NFT in NFTsList" :key="NFT.id">
+      <NFTCard v-if="NFT.tokenType === 'ERC721' && NFT.name" :metadata="NFT"/>
+    </div>
     <div v-for="NFT in importedNFTs" :key="NFT.id">
       <NFTCard v-if="NFT.tokenType === 'ERC721' && NFT.name" :metadata="NFT"/>
     </div>
