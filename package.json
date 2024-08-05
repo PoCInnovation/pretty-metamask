@@ -22,7 +22,8 @@
     "axios": "^1.7.2",
     "crypto-ts": "^1.0.2",
     "viem": "^2.14.2",
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
