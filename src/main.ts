@@ -1,11 +1,15 @@
 import './assets/main.css'
+import './index.css'
+import Loading from './LoadingPage.vue'
 
-import { createApp } from 'vue'
-import App from '@/App.vue'
+const loading = createApp(Loading)
+loading.mount('#loading')
+
+import { createApp, nextTick } from 'vue'
+import App from './App.vue'
 import { createPublicClient, createWalletClient, http, custom } from 'viem'
 import { sepolia } from 'viem/chains'
 import axios from 'axios';
-
 
 const pub_client = createPublicClient({
     chain: sepolia,
@@ -32,8 +36,12 @@ const accounts = await wal_client.requestAddresses()
 console.log(accounts)
 
 export const pubClient = pub_client;
-//export const walClient = wal_client;
+export const walClient = wal_client;
 export const account = accounts[0];
 export const x = ax;
 
 createApp(App).mount('#app')
+
+nextTick().then(() => {
+    loading.unmount()
+})

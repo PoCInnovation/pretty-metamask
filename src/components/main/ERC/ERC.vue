@@ -11,7 +11,7 @@ import TabsERC from '@/components/main/ERC/tab/Tabs.vue';
 import Token from './token/Token.vue';
 import NFT from './NFT/NFT.vue';
 import { ref } from 'vue';
-import Actions from '@/components/main/action-button/UserActions.vue';
+import Actions from '@/components/main/action/UserActionsButton.vue';
 import UserProfile from '../user-info/UserProfile.vue'
 import UserInfos from '@/components/main/user-info/UserInfos.vue'
 

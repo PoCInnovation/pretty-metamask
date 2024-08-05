@@ -37,7 +37,7 @@
 import { account, pubClient, x } from '../../main';
 import { ref, onMounted } from 'vue';
 import { formatEther, getContract } from 'viem'
-import { symbol, Transfer, } from '@abimate/openzeppelin/ERC20';
+import ERC20 from '@openzeppelin/contracts/build/contracts/ERC20.json';
 import transactionInfos from './transactionInfos.vue';
 
 const props = defineProps({
@@ -47,7 +47,6 @@ const props = defineProps({
 })
 
 const popUp = ref(false)
-const ERC20 = [symbol, Transfer]
 const fromMe = ref(props.from)
 
 interface Transaction {
