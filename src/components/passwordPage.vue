@@ -1,26 +1,53 @@
 <template>
-    <div id="password-page">
-	    <h1 class="title">Enter Password</h1>
+    <div id="password-page" v-if="havePassword">
+	    <h1 class="title">Enter your Password</h1>
 	    <input type="password" v-model="password" placeholder="Password" />
-	    <button class="btn" @click="submitPassword">Submit</button>
+	    <button class="btn" @click="submitPassword">Enter</button>
+    </div>
+    <div id="password-page" v-else>
+        <h1 class="title">Create your Password</h1>
+	    <input type="password" v-model="password" placeholder="Password" />
+	    <button class="btn" @click="createPassword">Create</button>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue'
+import { ref, defineEmits, onMounted } from 'vue'
+import CryptoJS from 'crypto-js'
 
 const password = ref('')
+const havePassword = ref(false)
 const emit = defineEmits(['isOpen'])
+
+const createPassword = () => {
+    const hashedPassword = CryptoJS.SHA256(password.value).toString()
+    localStorage.setItem('password', hashedPassword)
+    localStorage.setItem('open-wallet', 'true')
+    emit('isOpen')
+}
 
 const submitPassword = () => {
     const storedPassword = localStorage.getItem('password')
-    if (password.value === storedPassword) {
+    if (!storedPassword) {
+        alert('No password set')
+        return
+    }
+    const hashedInputPassword = CryptoJS.SHA256(password.value).toString()
+    if (hashedInputPassword === storedPassword) {
         localStorage.setItem('open-wallet', 'true')
         emit('isOpen')
     } else {
         alert('Incorrect password')
+        password.value = ''
     }
 }
+
+onMounted(() => {
+    const storedPassword = localStorage.getItem('password')
+    if (storedPassword) {
+        havePassword.value = true
+    }
+})
 </script>
 
 <style scoped>
@@ -42,6 +69,10 @@ const submitPassword = () => {
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 20px;
+}
+
+input {
+    color: black;
 }
 
 #password-page {
