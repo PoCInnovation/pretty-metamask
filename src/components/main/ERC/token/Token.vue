@@ -1,14 +1,19 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import DisplayTokens from './ButtonBalance.vue';
 
 export default defineComponent({
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: 'Token',
+  name: 'TOKEN',
+  components: {
+    DisplayTokens,
+  },
 });
 </script>
 
 <template>
-  <div id="container"></div>
+  <div id="container">
+    <DisplayTokens />
+  </div>
 </template>
 
 <style scoped>
