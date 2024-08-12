@@ -3,6 +3,7 @@
     <div class="title">Transactions</div>
     <div class="list">
       <transaction v-for="t in transactionshash" :hash="t.hash" :devise="t.devise" :from="t.from.valueOf()" :key="t.hash"/>
+      <h1 v-if="transactionshash.length == 0" style="text-align: center; font-size: 30px; margin-top: 30%; color: #a1a1a1">{{ msg }}</h1>
     </div>
     <div class="link">
       <div class="clickable">
@@ -15,7 +16,7 @@
 
 <script setup lang="ts">
 import transaction from './transaction.vue'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { fromHex } from 'viem'
 
@@ -29,6 +30,13 @@ interface Transaction {
 const store = useStore();
 const account = computed(() => store.getters.selectedAccount);
 const transactionshash = ref<Transaction[]>([])
+const msg = ref("No account");
+
+watchEffect(async () => {
+  if (account.value) {
+    await btn();
+  }
+});
 
 const walletLink = () => {
   if (account.value) {
@@ -62,6 +70,8 @@ const getLastTransactions = (transactions: Transaction[]): Transaction[] => {
 
 const btn = async () => {
   if (!account.value) return;
+  console.log("account: ", account.value);
+  msg.value = "Loading transactions...";
 
   let transactions = await getTransactionsFrom();
   let ls: Transaction[] = [];
@@ -87,6 +97,7 @@ const btn = async () => {
 
   transactionshash.value = getLastTransactions(ls);
   console.log("transactions: ", transactionshash.value);
+  msg.value = "No transactions found";
 }
 
 const getTransactionsFrom = async () => {
