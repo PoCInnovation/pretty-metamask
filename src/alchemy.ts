@@ -8,7 +8,7 @@ interface Config {
 
 const config: Config = {
   apiKey: 'aKVhzlNCwLMUs1hm_m7G3g00_vcuBkKh',
-  network: Network.ETH_MAINNET,
+  network: Network.ETH_SEPOLIA,
 };
 
 const alchemy = new Alchemy(config as AlchemyConfig);
