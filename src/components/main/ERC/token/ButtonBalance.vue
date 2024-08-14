@@ -21,53 +21,66 @@
         </li>
       </ul>
     </div>
-    <p v-if="error">{{ error }}</p>
+    <p v-if="error" style="margin: 5px 14px;">{{ error }}</p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { getBalances } from '../../../../alchemy';
-import { account } from '@/main'
+import { useStore } from 'vuex';
 
 export default defineComponent({
-  name: 'TokenBalances', // Ensure the component has a proper name
-  data() {
-    return {
-      userAddress: '',
-      address: account,
-      balances: [] as Array<{ name: string | null; logo: string | null; balance: string; symbol: string | null; decimals: number | null }>,
-      error: '',
-      loading: false
-    };
-  },
-  computed: {
-    addressToDisplay(): string {
-      return this.userAddress.trim() || this.address;
-    }
-  },
-  methods: {
-    async handleButtonClick() {
-      this.loading = true;
-      this.error = '';
-      this.balances = [];
+  name: 'TokenBalances',
+  setup() {
+    const store = useStore();
 
+    const userAddress = ref('');
+    const balances = ref<Array<{ name: string | null; logo: string | null; balance: string; symbol: string | null; decimals: number | null }>>([]);
+    const error = ref('');
+    const loading = ref(false);
+
+    const account = computed(() => store?.getters?.selectedAccount || '');
+
+    const addressToDisplay = computed(() => {
+      return userAddress.value.trim() || account.value;
+    });
+
+    const handleButtonClick = async () => {
+      loading.value = true;
+      error.value = '';
+      balances.value = [];
       try {
-        const addressToUse = this.addressToDisplay;
-        this.balances = await getBalances(addressToUse);
-        if (this.balances.length === 0) {
-          this.error = `No balances found for the address: ${addressToUse}.`;
+        const addressToUse = addressToDisplay.value;
+        if (!addressToUse) {
+          error.value = 'No address provided.';
+          return;
         }
-      } catch (error) {
-        this.error = 'An error occurred while fetching balances.';
-        console.error(error);
+        balances.value = await getBalances(addressToUse);
+        console.log(account.value);
+        if (balances.value.length === 0) {
+          error.value = `No balances found for the address: ${addressToUse}.`;
+        }
+      } catch (err) {
+        error.value = 'An error occurred while fetching balances.';
+        console.error(err);
       } finally {
-        this.loading = false;
+        loading.value = false;
       }
-    }
-  },
-  mounted() {
-    this.handleButtonClick(); // Automatically fetch balances on mount
+    };
+
+    watchEffect(() => {
+      handleButtonClick();
+    });
+
+    return {
+      userAddress,
+      balances,
+      error,
+      loading,
+      account,
+      handleButtonClick
+    };
   }
 });
 </script>
