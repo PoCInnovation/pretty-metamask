@@ -2,10 +2,45 @@
   import VerticalNavbar from "./components/wallet/verticalNavbar.vue";
   import transactions_container from "./components/transaction/transactions_container.vue";
   import ERC from "./components/main/ERC/ERC.vue";
+  import { onMounted, ref, onUnmounted } from "vue";
+  import passwordPage from "./components/passwordPage.vue";
+
+  const open = ref(false)
+
+  onMounted(() => {
+    const isOpen = localStorage.getItem('open-wallet')
+    if (isOpen === 'true') {
+      open.value = true
+    }
+
+    setInterval(checkOpen, 5000);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        open.value = false;
+        localStorage.setItem('open-wallet', 'false');
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    onUnmounted(() => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    });
+  })
+
+  function checkOpen() {
+    const isOpen = localStorage.getItem('open-wallet')
+    if (isOpen === 'true') {
+      open.value = true
+    } else {
+      open.value = false
+    }
+  }
 </script>
 
 <template>
-  <div id="container">
+  <div v-if="open" id="container">
     <header>
     </header>
     <main>
@@ -19,6 +54,9 @@
         <div />
       </div>
     </main>
+  </div>
+  <div v-else>
+    <passwordPage @isOpen="checkOpen()"/>
   </div>
 </template>
 

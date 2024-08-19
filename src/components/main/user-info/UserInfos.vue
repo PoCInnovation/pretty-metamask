@@ -1,10 +1,20 @@
 <script setup lang="ts">
+import { ref, computed, watchEffect } from 'vue';
+import { useStore } from 'vuex';
 import { getBalance } from '@/getBalance';
-import { exchangeRates } from '@/exchangeRates'
-import { account } from '@/main'
+import { exchangeRates } from '@/exchangeRates';
 
-const balance = await getBalance(account).then((res: number) => Number(res) / Number(BigInt(1000000000000000000)))
-const ETH = await exchangeRates('ETH').then((res: any) => res.data.rates.USD)
+const store = useStore();
+const account = computed(() => store.getters.selectedAccount);
+const balance = ref<number | null>(null);
+const ETH = ref<number | null>(null);
+
+ETH.value = await exchangeRates('ETH').then((res: any) => res.data.rates.USD);
+watchEffect(async () => {
+  if (account.value) {
+    balance.value = await getBalance(account.value).then((res: number) => Number(res) / Number(BigInt(1000000000000000000)));
+  }
+});
 </script>
 
 <template>
@@ -12,14 +22,14 @@ const ETH = await exchangeRates('ETH').then((res: any) => res.data.rates.USD)
     <div id="token">
       <img src="../../../assets/eth_logo.png" alt="ETH" id="eth-logo"/>
       <div id="balance">
-        <h1>{{ balance.toFixed(4) }} ETH</h1>
-        <p>${{ (balance.toFixed(4) * ETH).toFixed(2) }} USD</p>
+        <h1 v-if="balance !== null">{{ balance.toFixed(4) }} ETH</h1>
+        <p v-if="balance !== null && ETH !== null">${{ (balance.toFixed(4) * ETH).toFixed(2) }} USD</p>
       </div>
     </div>
     <div id="exchange">
       <h2>1 ETH</h2>
       <img src="../../../assets/arrow.svg" alt="arrow" id="arrow"/>
-      <h2>{{ ETH }} USD</h2>
+      <h2 v-if="ETH !== null">{{ ETH }} USD</h2>
     </div>
   </div>
 </template>
