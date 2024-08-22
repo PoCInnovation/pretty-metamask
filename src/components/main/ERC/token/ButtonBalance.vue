@@ -10,7 +10,7 @@
         <li v-for="(balance, index) in balances" :key="index">
           <div v-if="balance.name != null" class="TokenBox">
             <div class="TokenLeft">
-              <img :src="balance.logo ? balance.logo : '../../../icons/question.png'" :alt="balance.name" />
+              <img :src="balance.logo ? balance.logo : 'img/question.png'" :alt="balance.name" />
               <span class="TitleToken">{{ balance.name }}</span>
             </div>
             <div class="TokenRight">
