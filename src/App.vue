@@ -4,6 +4,7 @@
   import ERC from "./components/main/ERC/ERC.vue";
   import { onMounted, ref, onUnmounted } from "vue";
   import passwordPage from "./components/passwordPage.vue";
+  import chainSwitcher from "./components/chainSwitcher.vue";
 
   const open = ref(false)
 
@@ -42,6 +43,8 @@
 <template>
   <div v-if="open" id="container">
     <header>
+      <div class="logo"><h1>✨Metamask✨</h1></div>
+      <chainSwitcher />
     </header>
     <main>
       <VerticalNavbar />
