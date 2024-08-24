@@ -16,6 +16,7 @@
             <div class="TokenRight">
               <span>{{ balance.balance }}</span>
               <span>{{ balance.symbol }}</span>
+              <span>{{ balance.balanceValue }}</span>
             </div>
           </div>
         </li>
@@ -36,7 +37,7 @@ export default defineComponent({
     const store = useStore();
 
     const userAddress = ref('');
-    const balances = ref<Array<{ name: string | null; logo: string | null; balance: string; symbol: string | null; decimals: number | null }>>([]);
+    const balances = ref<Array<{ name: string | null; logo: string | null; balance: string; symbol: string | null; decimals: number | null; balanceValue: number | null }>>([]);
     const error = ref('');
     const loading = ref(false);
 
