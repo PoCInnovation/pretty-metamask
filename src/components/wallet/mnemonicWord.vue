@@ -28,10 +28,10 @@ export default {
         console.error('Failed to copy text: ', err);
       });
     },
-    showInfo() {
+    showInfoToggle() {
       this.showInfo = true;
     },
-    hideInfo() {
+    hideInfoToggle() {
       this.showInfo = false;
     }
   }
@@ -44,17 +44,17 @@ export default {
     <div
       class="relative flex items-center justify-center space-x-1 cursor-pointer"
       @click="copyWord"
-      @mouseover="showInfo"
-      @mouseleave="hideInfo"
+      @mouseover="showInfoToggle"
+      @mouseleave="hideInfoToggle"
     >
-      <div :class="['bg-gray-800 items-center justify-center border border-gray-700 rounded-lg flex py-4 px-12 transition-all', { 'bg-green-500': copied }]">
-        <span class="text-white text-lg">{{ word }}</span>
+      <button class="btn btn-outline btn-primary text-xl">{{ word }}</button>
+      <div v-show="showInfo && !copied" class="absolute bottom-full mb-2 px-2 py-1 bg-gray-800 rounded-lg transition-opacity duration-300"
+           :class="{'opacity-100': showInfo}">
+        <span class="text-white text-xs">Copiable!</span>
       </div>
-      <div v-if="showInfo && !copied" class="absolute bottom-full mb-2 px-2 py-1 bg-black rounded-lg">
-        <span class="text-xs text-white">Click to copy</span>
-      </div>
-      <div v-if="copied" class="absolute bottom-full mb-2 px-2 py-1 bg-green-500 rounded-lg">
-        <span class="text-xs text-white">Copied !</span>
+      <div v-show="copied" class="absolute bottom-full mb-2 px-2 py-1 bg-green-500 rounded-lg transition-opacity duration-300"
+           :class="{'opacity-100': copied, 'opacity-0': !copied}">
+        <span class="text-xs text-white">Copied!</span>
       </div>
     </div>
   </div>
