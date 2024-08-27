@@ -1,5 +1,5 @@
-import { client } from './client';
+import { pubClient } from "./main";
 
 export const getBalance = async (address: any): Promise<bigint> => {
-  return await client.getBalance({ address: address });
+  return await pubClient.getBalance({ address: address });
 }

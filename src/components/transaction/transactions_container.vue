@@ -19,6 +19,7 @@ import transaction from './transaction.vue'
 import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { fromHex } from 'viem'
+import { chain } from '../../multichain'
 
 interface Transaction {
   hash: string,

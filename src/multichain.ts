@@ -1,6 +1,8 @@
 import { switchChain } from 'viem/actions'
 import { sepolia, mainnet } from 'viem/chains'
 import { pubClient } from './main'
+import { ref } from 'vue'
+import { x } from './main'
 
 const apiKey = import.meta.env.VITE_ALCHEMY_API_KEY
 
@@ -17,13 +19,16 @@ const chainLs = [
     },
 ]
 
+const chain = ref(chainLs[0])
+
 const SwitchChain = (chainIdx: number) => {
     if (chainIdx >= chainLs.length) {
         console.log("Invalid chain index")
         return
     }
-    switchChain(pubClient, chainLs[chainIdx].chain)
+    chain.value = chainLs[chainIdx]
+    pubClient.chain = chainLs[chainIdx].chain as typeof pubClient.chain
     x.defaults.baseURL = chainLs[chainIdx].alchemyURL
 }
 
-export { SwitchChain }
+export { SwitchChain, chain, chainLs }

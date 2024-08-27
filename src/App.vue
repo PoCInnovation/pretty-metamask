@@ -43,7 +43,7 @@
 <template>
   <div v-if="open" id="container">
     <header>
-      <div class="logo"><h1>✨Metamask✨</h1></div>
+      <div class="logo"><h1>✨Pretty-Metamask✨</h1></div>
       <chainSwitcher />
     </header>
     <main>
@@ -74,6 +74,13 @@
     color: white;
     width: 100vw;
     border-bottom: 1px solid rgb(3, 3, 3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5vw;
+  }
+  .logo {
+    font-size: 2.4rem;
   }
   main {
     display: flex;
