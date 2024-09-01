@@ -2,7 +2,9 @@
   <div id="container">
     <div class="input-container">
       <input type="text" v-model="userAddress" placeholder="Get balance for another address..." />
+      <button @click="toggleMode">{{ currentMode }}</button>
       <button @click="handleButtonClick">Submit</button>
+      
     </div>
     <p v-if="loading">Loading...</p>
     <div v-if="balances.length > 0" class="scroll-container scrollbar"  id="tokens">
@@ -10,7 +12,7 @@
         <li v-for="(balance, index) in balances" :key="index">
           <div v-if="balance.name != null" class="TokenBox">
             <div class="TokenLeft">
-              <img :src="balance.logo ? balance.logo : 'img/question.png'" :alt="balance.name" />
+              <img :src="balance.logo" :alt="balance.name" />
               <span class="TitleToken">{{ balance.name }}</span>
             </div>
             <div class="TokenRight">
@@ -28,16 +30,19 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { getBalances } from '../../../../alchemy';
+import { processAll } from '../../../../alchemy';
 import { useStore } from 'vuex';
+import { Network } from 'alchemy-sdk';
 
 export default defineComponent({
   name: 'TokenBalances',
   setup() {
+    const modes: Network[] = [Network.ETH_SEPOLIA, Network.ETH_MAINNET];
+    const currentMode = ref(modes[0]);
     const store = useStore();
 
     const userAddress = ref('');
-    const balances = ref<Array<{ name: string | null; logo: string | null; balance: string; symbol: string | null; decimals: number | null; balanceValue: number | null }>>([]);
+    const balances = ref<Array<{ name: string; logo: string; balance: string; symbol: string; decimals: number; balanceValue: string | null }>>([]);
     const error = ref('');
     const loading = ref(false);
 
@@ -46,6 +51,10 @@ export default defineComponent({
     const addressToDisplay = computed(() => {
       return userAddress.value.trim() || account.value;
     });
+
+    function toggleMode() {
+      currentMode.value = currentMode.value === modes[0] ? modes[1] : modes[0];
+    }
 
     const handleButtonClick = async () => {
       loading.value = true;
@@ -57,7 +66,7 @@ export default defineComponent({
           error.value = 'No address provided.';
           return;
         }
-        balances.value = await getBalances(addressToUse);
+        balances.value = await processAll(addressToUse, currentMode.value);
         console.log(account.value);
         if (balances.value.length === 0) {
           error.value = `No balances found for the address: ${addressToUse}.`;
@@ -75,11 +84,14 @@ export default defineComponent({
     });
 
     return {
+      modes,
+      currentMode,
       userAddress,
       balances,
       error,
       loading,
-      account,
+      addressToDisplay,
+      toggleMode,
       handleButtonClick
     };
   }
