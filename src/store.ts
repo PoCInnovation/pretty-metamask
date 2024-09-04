@@ -1,5 +1,7 @@
 import { createStore } from 'vuex';
 import type { WalletClient } from 'viem';
+import { switchChain } from 'viem/actions';
+import { pubClient } from './main'
 
 interface Account {
   name: string;
@@ -12,11 +14,13 @@ interface Account {
 interface State {
   accounts: Account[];
   selectedAccount: string | null;
+  chain: any | null;
 }
 
 const state: State = {
   accounts: [],
   selectedAccount: null,
+  chain: null,
 };
 
 const mutations = {
@@ -31,6 +35,14 @@ const mutations = {
   clearAccounts(state: State) {
     state.accounts = [];
     state.selectedAccount = null;
+  },
+  switchWalletChain(state: State) {
+    state.accounts.forEach(account => {
+      switchChain(account.wallet, state.chain as typeof pubClient.chain);
+    });
+  },
+  saveChain(state: State, chain: any) {
+    state.chain = chain;
   }
 };
 
@@ -43,6 +55,12 @@ const actions = {
   },
   clearAccounts({ commit }: { commit: Function }) {
     commit('clearAccounts');
+  },
+  switchWalletChain({ commit }: { commit: Function }) {
+    commit('switchWalletChain');
+  },
+  saveChain({ commit }: { commit: Function }, chain: any) {
+    commit('saveChain', chain);
   }
 };
 
@@ -54,7 +72,8 @@ const getters = {
       ...account,
       reducedAddress: `${account.address.slice(0, 7)}...${account.address.slice(-5)}`
     }));
-  }
+  },
+  chain: (state: State) => state.chain
 };
 
 const store = createStore({
@@ -64,4 +83,7 @@ const store = createStore({
   getters
 });
 
+const key = Symbol();
+
 export default store;
+export { key };

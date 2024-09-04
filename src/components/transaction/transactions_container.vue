@@ -33,12 +33,6 @@ const account = computed(() => store.getters.selectedAccount);
 const transactionshash = ref<Transaction[]>([])
 const msg = ref("No account");
 
-watchEffect(async () => {
-  if (account.value) {
-    await btn();
-  }
-});
-
 const walletLink = () => {
   if (account.value) {
     window.open(`https://sepolia.etherscan.io/address/${account.value}`);
@@ -155,6 +149,12 @@ const getTransactionsTo = async () => {
 
 onMounted(async () => {
   await btn();
+});
+
+watchEffect(async () => {
+  if (account.value) {
+    await btn();
+  }
 });
 </script>
 

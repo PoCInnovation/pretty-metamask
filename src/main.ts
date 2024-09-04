@@ -7,7 +7,7 @@ loading.mount('#loading')
 
 import { createApp, nextTick } from 'vue'
 import App from './App.vue'
-import { createPublicClient, createWalletClient, http, custom } from 'viem'
+import { createPublicClient, http } from 'viem'
 import { sepolia } from 'viem/chains'
 import axios from 'axios'
 import store from './store'
@@ -37,18 +37,3 @@ app.mount('#app')
 nextTick().then(() => {
     loading.unmount()
 })
-
-export async function connectWallet() {
-    const wal_client = createWalletClient({
-        chain: sepolia,
-        transport: custom(window.ethereum!),
-    })
-
-    const accounts = await wal_client.requestAddresses()
-    console.log(accounts)
-
-    store.dispatch('addAccount', {
-        address: accounts[0],
-        walletClient: wal_client,
-    })
-}

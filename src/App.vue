@@ -5,6 +5,7 @@
   import { onMounted, ref, onUnmounted } from "vue";
   import passwordPage from "./components/passwordPage.vue";
   import chainSwitcher from "./components/chainSwitcher.vue";
+  import { SwitchChain } from "./multichain";
 
   const open = ref(false)
 
@@ -13,6 +14,7 @@
     if (isOpen === 'true') {
       open.value = true
     }
+    SwitchChain()
 
     setInterval(checkOpen, 5000);
 
