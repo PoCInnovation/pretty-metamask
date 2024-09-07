@@ -83,7 +83,4 @@ const store = createStore({
   getters
 });
 
-const key = Symbol();
-
 export default store;
-export { key };

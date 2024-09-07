@@ -2,8 +2,6 @@ import { sepolia, mainnet } from 'viem/chains'
 import { pubClient } from './main'
 import { ref } from 'vue'
 import { x } from './main'
-import { useStore } from 'vuex'
-import { key } from './store'
 
 const apiKey = import.meta.env.VITE_ALCHEMY_API_KEY
 
@@ -24,7 +22,7 @@ const chainLs = [
 
 const chain = ref(chainLs[0])
 
-const SwitchChain = (chainID?: number) => {
+const SwitchChain = (store: any, chainID?: number) => {
     if (chainID != undefined && chainID < chainLs.length) {
         localStorage.setItem('chainIdx', chainID.toString())
     }
@@ -38,9 +36,7 @@ const SwitchChain = (chainID?: number) => {
         return
     }
     chain.value = chainLs[chainIdx]
-    pubClient.chain = chainLs[chainIdx].chain as typeof pubClient.chain
     x.defaults.baseURL = chainLs[chainIdx].alchemyURL
-    const store = useStore(key)
 
     if (store) {
         store.dispatch('saveChain', { chain: chain.value })

@@ -12,9 +12,12 @@
 <script setup lang="ts">
 import { SwitchChain } from '../multichain'
 import { chain, chainLs } from '../multichain'
+import { useStore } from 'vuex'
+
+const store = useStore()
 
 const switchChain = (index: number) => {
-    SwitchChain(index)
+    SwitchChain(store, index)
     console.log(chain.value.name)
 }
 

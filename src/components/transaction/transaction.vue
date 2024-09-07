@@ -38,6 +38,8 @@ import { useStore } from 'vuex';
 import { formatEther, getContract } from 'viem';
 import ERC20 from '@openzeppelin/contracts/build/contracts/ERC20.json';
 import transactionInfos from './transactionInfos.vue';
+import { x } from '../../main';
+import { pubClient } from '../../main';
 
 const props = defineProps({
   hash: String,
