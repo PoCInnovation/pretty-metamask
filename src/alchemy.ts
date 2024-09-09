@@ -12,6 +12,39 @@ const config: Config = {
   network: Network.ETH_MAINNET,
 };
 
+interface CoinGeckoToken {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  market_cap: number;
+  market_cap_rank: number;
+  fully_diluted_valuation: number;
+  total_volume: number;
+  high_24h: number;
+  low_24h: number;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  circulating_supply: number;
+  total_supply: number;
+  max_supply: number;
+  ath: number;
+  ath_change_percentage: number;
+  ath_date: string; // Using string to represent date-time
+  atl: number;
+  atl_change_percentage: number;
+  atl_date: string; // Using string to represent date-time
+  roi?: string; // ROI is optional as it's not mentioned in detail
+  last_updated: string; // Using string to represent date-time
+  price_change_percentage_1h?: number; // Optional because it may not always be present
+  sparkline_in_7d?: {
+    price: number[]; // Array of numbers for the 7-day sparkline data
+  };
+}
+
 type Token = {
   id: string;
   symbol: string;
@@ -42,15 +75,15 @@ export const processAll = async (address: string, network: Network) => {
 
   // recup les id dans le local storage, il faut l'id pas le symbol....
   balanceTokens.forEach(result => {
-    const symbol = result.symbol;
+    const symbol = result.symbol.toLowerCase();
     const value = localStorage.getItem(symbol);
-    
+    console.log(`symbol is ${symbol}, value ${value}`);
     if (value !== null) {
         map.set(symbol, value);
     }
   });
-
   await getTokensValue(map, balanceTokens);
+  // balanceTokens[0].
   return balanceTokens;
 }
 
@@ -109,21 +142,22 @@ async function updateCoinGeckoTokensValue() {
     const apiUrl = 'https://api.coingecko.com/api/v3/coins/list';
     const response = await fetch(apiUrl, options);
     const tokens = await response.json();
-    if (!localStorage.getItem("btc") || isMoreThanWeek())
+    if (localStorage.getItem("btc") || isMoreThanWeek())
       return;
-    console.log('API Response:', tokens);
+
     if (!Array.isArray(tokens)) {
       throw new Error('Expected an array but received: ' + typeof tokens);
     }
     const tokenMap: Record<string, string> = tokens.reduce((map: Record<string, string>, token: Token) => {
       map[token.symbol] = token.id;
+      console.log(`token symbol : ${token.symbol}, token id : ${token.id}`)
       return map;
     }, {} as Record<string, string>);
     // console.log(tokenMap);
     for (const [symbol, id] of Object.entries(tokenMap)) {
       localStorage.setItem(symbol, id);
     }
-    localStorage.setItem("Time", Date.now().toString());
+    localStorage.setItem("TimeOfLastUpdate", Date.now().toString());
     return;
   } catch (err) {
     console.error('Error fetching tokens:', err);
@@ -141,23 +175,39 @@ async function getTokensValue(id: Map<string, string> , balanceTokens: BalanceTo
       return;
     }
 
-    const valueString = Array.from(id.values()).join(", ");
-    console.log(`valueString is ${valueString}`); 
+    const valueString = Array.from(id.values()).join(",");
+    console.log(`valueString is ${valueString}`);
 
-    const apiUrl = `https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${valueString}`;
+    const apiUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${valueString}&x_cg_demo_api_key=CG-X2ove9UTHLYyzyJYeYiQgY9T`;
+
     const response = await fetch(apiUrl, options);
-    const tokens = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+    }
+    
+    const tokens: CoinGeckoToken[] = await response.json();
 
     if (!Array.isArray(tokens)) {
-      throw new Error('Expected an array but received: ' + typeof tokens);
+      throw new Error(`Expected an array but received: ${typeof tokens}`);
     }
 
+    console.log("Data from coingecko is ready")
     balanceTokens.forEach(token => {
-      const tokenId = id.get(token.symbol); // Get the corresponding ID for the symbol
+      const tokenId = id.get(token.symbol.toLowerCase());
       if (tokenId) {
-        const matchingToken = tokens.find(t => t.id === tokenId); // Find the corresponding token from the API response
+        const matchingToken = tokens.find(t => t.id === tokenId);
         if (matchingToken) {
-          token.balanceValue = matchingToken.current_price.toString(); // Update balanceValue
+          if (typeof matchingToken.current_price === 'number') {
+            console.log(`Token ID: ${tokenId}, Current Price: ${matchingToken.current_price}`);
+            token.balanceValue = formatBalanceValue(matchingToken.current_price, parseInt(token.balance));
+            console.log(`The user have: ${token.balanceValue}$`);
+          } else {
+            console.warn(`Current price is invalid for token ID: ${tokenId}`);
+            token.balanceValue = null;
+          }
+        } else {
+          console.log(`There is not correspondence for ${tokenId}`);
         }
       }
     });
@@ -168,8 +218,17 @@ async function getTokensValue(id: Map<string, string> , balanceTokens: BalanceTo
   }
 }
 
+function formatBalanceValue(price: number, quantity: number): string {
+  const result: number = price * quantity;
+
+  if (result > 10000)
+    return result.toExponential(3);
+  else
+    return result.toPrecision(2);
+}
+
 function isMoreThanWeek(): boolean {
-  const storedTime = localStorage.getItem('Time');
+  const storedTime = localStorage.getItem('TimeOfLastUpdate');
 
   if (!storedTime)
     return false;
