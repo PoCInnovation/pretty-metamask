@@ -15,8 +15,8 @@
     if (isOpen === 'true') {
       open.value = true
     }
-    const store = useStore()
-    SwitchChain(store)
+    // const store = useStore()
+    // SwitchChain(store)
 
     setInterval(checkOpen, 5000);
 

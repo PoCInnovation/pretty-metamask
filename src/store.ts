@@ -1,7 +1,13 @@
 import { createStore } from 'vuex';
-import type { WalletClient } from 'viem';
+import type { PublicClient, WalletClient } from 'viem';
+import { createPublicClient, http } from 'viem'
 import { switchChain } from 'viem/actions';
-import { pubClient } from './main'
+import { chain } from './multichain';
+
+const pub_client = createPublicClient({
+  chain: chain.value.chain,
+  transport: http(),
+})
 
 interface Account {
   name: string;
@@ -15,12 +21,14 @@ interface State {
   accounts: Account[];
   selectedAccount: string | null;
   chain: any | null;
+  pubClient: PublicClient;
 }
 
 const state: State = {
   accounts: [],
   selectedAccount: null,
-  chain: null,
+  chain: chain.value.chain,
+  pubClient: pub_client
 };
 
 const mutations = {
@@ -38,11 +46,14 @@ const mutations = {
   },
   switchWalletChain(state: State) {
     state.accounts.forEach(account => {
-      switchChain(account.wallet, state.chain as typeof pubClient.chain);
+      switchChain(account.wallet, state.chain as typeof pub_client.chain);
     });
   },
   saveChain(state: State, chain: any) {
     state.chain = chain;
+  },
+  savePubClient(state: State, pubClient: any) {
+    state.pubClient = pubClient;
   }
 };
 
@@ -61,6 +72,9 @@ const actions = {
   },
   saveChain({ commit }: { commit: Function }, chain: any) {
     commit('saveChain', chain);
+  },
+  savePubClient({ commit }: { commit: Function }, pubClient: any) {
+    commit('savePubClient', pubClient);
   }
 };
 
@@ -73,7 +87,8 @@ const getters = {
       reducedAddress: `${account.address.slice(0, 7)}...${account.address.slice(-5)}`
     }));
   },
-  chain: (state: State) => state.chain
+  chain: (state: State) => state.chain,
+  pubClient: (state: State) => state.pubClient
 };
 
 const store = createStore({

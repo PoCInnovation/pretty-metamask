@@ -18,8 +18,8 @@
 import transaction from './transaction.vue'
 import { ref, computed, watchEffect } from 'vue'
 import { useStore } from 'vuex'
-import { x } from '../../main'
 import { fromHex } from 'viem'
+import { x } from '../../main'
 
 interface Transaction {
   hash: string,
@@ -29,7 +29,8 @@ interface Transaction {
 }
 
 const store = useStore();
-const account = computed(() => store.getters.selectedAccount);
+// const account = computed(() => store.getters.selectedAccount);
+const account = ref("0xeAEa4e7D35Bd0E683856E171b598cB83E61676d2");
 const transactionshash = ref<Transaction[]>([])
 const msg = ref("No account");
 const myChain = computed(() => store.getters.chain);
@@ -66,7 +67,6 @@ const getLastTransactions = (transactions: Transaction[]): Transaction[] => {
 
 const btn = async () => {
   if (!account.value) return;
-  console.log("account: ", account.value);
   msg.value = "Loading transactions...";
 
   let transactions = await getTransactionsFrom();
@@ -144,6 +144,7 @@ const getTransactionsTo = async () => {
     const transactions = (await x.post('/', data)).data.result.transfers;
     return transactions;
   } catch (error) {
+    console.log(error);
     return [];
   }
 }

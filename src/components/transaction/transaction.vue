@@ -35,11 +35,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
-import { formatEther, getContract } from 'viem';
+import { formatEther, getContract, type PublicClient } from 'viem';
 import ERC20 from '@openzeppelin/contracts/build/contracts/ERC20.json';
 import transactionInfos from './transactionInfos.vue';
 import { x } from '../../main';
-import { pubClient } from '../../main';
 
 const props = defineProps({
   hash: String,
@@ -48,7 +47,10 @@ const props = defineProps({
 });
 
 const store = useStore();
-const account = computed(() => store.getters.selectedAccount);
+const pubClient: PublicClient = store.getters.pubClient;
+
+// const account = computed(() => store.getters.selectedAccount);
+const account = ref("0xeAEa4e7D35Bd0E683856E171b598cB83E61676d2");
 const popUp = ref(false);
 const fromMe = ref(props.from);
 
@@ -135,6 +137,7 @@ const getErc20Infos = async (transactionInfos: any, transactionReceipt: any, tra
 };
 
 const getTransactionInfos = async (transactionHash: `0x${string}`) => {
+  console.log(pubClient.getBlockNumber());
   const transactionInfos = await pubClient.getTransaction({
     hash: transactionHash
   });
