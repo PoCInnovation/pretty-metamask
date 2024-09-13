@@ -48,6 +48,7 @@ const mutations = {
     state.accounts.forEach(account => {
       switchChain(account.wallet, state.chain as typeof pub_client.chain);
     });
+    state.pubClient.chain = state.chain.chain.chain;
   },
   saveChain(state: State, chain: any) {
     state.chain = chain;

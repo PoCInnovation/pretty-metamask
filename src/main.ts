@@ -14,7 +14,7 @@ import store from './store'
 
 const pub_client = createPublicClient({
     chain: sepolia,
-    transport: http(),
+    transport: http(""),
 })
 
 const apiKey = import.meta.env.VITE_ALCHEMY_API_KEY

@@ -38,16 +38,16 @@ const SwitchChain = (store: any, chainID?: number) => {
     chain.value = chainLs[chainIdx]
     x.defaults.baseURL = chainLs[chainIdx].alchemyURL
     console.log("Switched to chain: ", chain.value)
-    const newPubClient = createPublicClient({
-        chain: chain.value.chain,
-        transport: http(),
-    })
-    console.log("newPubClient: ", newPubClient)
+    // const newPubClient = createPublicClient({
+    //     chain: chain.value.chain,
+    //     transport: http(),
+    // })
+    // console.log("newPubClient: ", newPubClient)
 
     if (store) {
         store.dispatch('saveChain', { chain: chain.value })
         store.dispatch('switchWalletChain')
-        store.dispatch('savePubClient', { pubClient: newPubClient })
+        // store.dispatch('savePubClient', { pubClient: newPubClient })
     } else {
         console.error('Vuex store is not initialized')
     }
