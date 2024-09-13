@@ -29,8 +29,7 @@ interface Transaction {
 }
 
 const store = useStore();
-// const account = computed(() => store.getters.selectedAccount);
-const account = ref("0x0B21D03690d8322ADA9c65Fb671Fa1DD97B2cb72");
+const account = computed(() => store.getters.selectedAccount);
 const transactionshash = ref<Transaction[]>([]);
 const msg = ref("No account");
 const myChain = computed(() => store.getters.chain);

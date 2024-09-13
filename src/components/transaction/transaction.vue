@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { formatEther, getContract, type PublicClient } from 'viem';
 import ERC20 from '@openzeppelin/contracts/build/contracts/ERC20.json';
@@ -47,12 +47,9 @@ const props = defineProps({
   from: Boolean
 });
 
-// const store = useStore();
-// const pubClient: PublicClient = store.getters.pubClient;
 var pubClient: PublicClient;
 
-// const account = computed(() => store.getters.selectedAccount);
-const account = ref("0x0B21D03690d8322ADA9c65Fb671Fa1DD97B2cb72");
+const account = computed(() => store.getters.selectedAccount);
 const popUp = ref(false);
 const fromMe = ref(props.from);
 
