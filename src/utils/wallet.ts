@@ -13,11 +13,11 @@ function uint8ToHexString(uint8Array: Uint8Array | null): `0x${string}` {
     return `0x${hexString}` as `0x${string}`;
 }
 
-export function generateWallet(): { newWallet:WalletClient, mnemonic:string } {
+export function generateWallet(walletNumber: number): { newWallet:WalletClient, mnemonic:string, privateKey:string } {
     const mnemonic = generateMnemonic(english)
     const seed = mnemonicToSeedSync(mnemonic)
     const masterKey = HDKey.fromMasterSeed(seed)
-    const privateKeyUint8 = masterKey.derive(`m/44'/60'/0'/0/0`).privateKey
+    const privateKeyUint8 = masterKey.derive(`m/44'/60'/0'/0/${walletNumber}`).privateKey
     const privateKey = uint8ToHexString(privateKeyUint8)
     const account = privateKeyToAccount(privateKey)
 
@@ -26,5 +26,5 @@ export function generateWallet(): { newWallet:WalletClient, mnemonic:string } {
         chain: mainnet,
         transport: http()
     })
-    return { newWallet, mnemonic }
+    return { newWallet, mnemonic, privateKey }
 }
