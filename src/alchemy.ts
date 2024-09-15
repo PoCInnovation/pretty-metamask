@@ -1,6 +1,7 @@
 import type { AlchemyConfig } from "alchemy-sdk";
-import { Network, Alchemy } from "alchemy-sdk";
+import { Network, Alchemy, Utils } from "alchemy-sdk";
 import { BigNumber } from 'bignumber.js';
+import { client } from './client'
 
 interface Config {
   apiKey: string;
@@ -33,15 +34,15 @@ interface CoinGeckoToken {
   max_supply: number;
   ath: number;
   ath_change_percentage: number;
-  ath_date: string; // Using string to represent date-time
+  ath_date: string;
   atl: number;
   atl_change_percentage: number;
-  atl_date: string; // Using string to represent date-time
-  roi?: string; // ROI is optional as it's not mentioned in detail
-  last_updated: string; // Using string to represent date-time
-  price_change_percentage_1h?: number; // Optional because it may not always be present
+  atl_date: string;
+  roi?: string;
+  last_updated: string;
+  price_change_percentage_1h?: number;
   sparkline_in_7d?: {
-    price: number[]; // Array of numbers for the 7-day sparkline data
+    price: number[];
   };
 }
 
@@ -66,14 +67,13 @@ const options = {
 };
 
 
-export const processAll = async (address: string, network: Network) => {
+export const processAll = async (address_: `0x${string}`, network_: Network) => {
 
-  const balanceTokens = await getBalances(address, network);
+  const balanceTokens: BalanceToken[] = await getBalances(address_, network_);
 
   await updateCoinGeckoTokensValue();
   const map = new Map<string, string>();
 
-  // recup les id dans le local storage, il faut l'id pas le symbol....
   balanceTokens.forEach(result => {
     const symbol = result.symbol.toLowerCase();
     const value = localStorage.getItem(symbol);
@@ -82,16 +82,35 @@ export const processAll = async (address: string, network: Network) => {
         map.set(symbol, value);
     }
   });
+  await setEth(address_, map, balanceTokens);
   await getTokensValue(map, balanceTokens);
-  // balanceTokens[0].
   return balanceTokens;
 }
 
-async function getBalances(address: string, network: Network): Promise<BalanceToken[]> {
+async function setEth(address_: `0x${string}`, map: Map<string, string>, balanceTokens: BalanceToken[]) {
+  const weiValue = await client.getBalance({ 
+    address: address_,
+  })
+
+  map.set('eth', 'ethereum');
+
+  const balanceEth: string = Utils.formatEther(weiValue);
+
+  balanceTokens.push({
+    name: 'Etherum',
+    logo: '/img/eth_logo.png',
+    balance: balanceEth,
+    symbol: 'eth',
+    decimals: 18,
+    balanceValue: null
+  });
+}
+
+async function getBalances(address_: `0x${string}`, network: Network): Promise<BalanceToken[]> {
   try {
     config.network = network;
     const alchemy = new Alchemy(config as AlchemyConfig);
-    const balances = await alchemy.core.getTokenBalances(address);
+    const balances = await alchemy.core.getTokenBalances(address_);
     const nonZeroBalances = balances.tokenBalances.filter((token) => {
         return token.tokenBalance !== "0x0000000000000000000000000000000000000000000000000000000000000000";
     });
@@ -99,7 +118,7 @@ async function getBalances(address: string, network: Network): Promise<BalanceTo
     const balanceResults: BalanceToken[] = [];
 
     for (const token of nonZeroBalances) {
-      let balance: BigNumber = new BigNumber(0); // Use BigNumber for precision
+      let balance: BigNumber = new BigNumber(0);
       if (token.tokenBalance != null) {
         balance = new BigNumber(token.tokenBalance);
       }
@@ -124,7 +143,7 @@ async function getBalances(address: string, network: Network): Promise<BalanceTo
     return balanceResults
 
   } catch (error) {
-    console.log(`${address}`)
+    console.log(`${address_}`)
     console.error(`Failed to fetch token balances:`, error);
     return [];
   }

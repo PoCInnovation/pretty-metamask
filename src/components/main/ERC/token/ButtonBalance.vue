@@ -223,8 +223,8 @@ button:hover {
 
 .scrollbar
 {
-	overflow-y: scroll;
 	margin-bottom: 25px;
+  scrollbar-width: none;
 }
 
 #tokens::-webkit-scrollbar-track
