@@ -1,13 +1,16 @@
 <template>
-    <div id="password-page" v-if="havePassword">
-	    <h1 class="title">Enter your Password</h1>
-	    <input type="password" v-model="password" placeholder="Password" />
-	    <button class="btn" @click="submitPassword">Enter</button>
-    </div>
-    <div id="password-page" v-else>
-        <h1 class="title">Create your Password</h1>
-	    <input type="password" v-model="password" placeholder="Password" />
-	    <button class="btn" @click="createPassword">Create</button>
+    <div id="password-page">
+        <img src='' alt="PrettyMetaMask Logo" class="logo">
+        <div v-if="havePassword">
+            <h1 class="title">Enter your Password</h1>
+            <input type="password" v-model="password" placeholder="Password" />
+            <button class="btn" @click="submitPassword">Enter</button>
+        </div>
+        <div v-else>
+            <h1 class="title">Create your Password</h1>
+            <input type="password" v-model="password" placeholder="Password" />
+            <button class="btn" @click="createPassword">Create</button>
+        </div>
     </div>
 </template>
 
@@ -51,30 +54,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.title {
-  color: white;
-  font-size: 25px;
-  margin: 5px;
-}
-
-.btn {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 20px;
-}
-
-input {
-    color: black;
-}
-
 #password-page {
   display: flex;
   flex-direction: column;
@@ -82,10 +61,83 @@ input {
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  background-color: rgb(25, 25, 25);
+  background-color: #1E1E1E;
+  padding: 20px;
 }
 
-input {
-  margin-bottom: 10px;
+.logo {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.title {
+  color: #FFFFFF;
+  font-size: 30px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+input[type="password"] {
+  width: 300px;
+  padding: 15px;
+  font-size: 16px;
+  border: 2px solid #4CAF50;
+  border-radius: 8px;
+  outline: none;
+  margin-bottom: 20px;
+  background-color: #2C2C2C;
+  color: white;
+  transition: border-color 0.3s;
+}
+
+input[type="password"]:focus {
+  border-color: #6FFF78;
+}
+
+.btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+  background-color: #45A049;
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  background-color: #3e8e41;
+  transform: translateY(0);
+}
+
+input::placeholder {
+  color: #B0B0B0;
+}
+
+@media (max-width: 768px) {
+  input[type="password"] {
+    width: 80%;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .btn {
+    font-size: 16px;
+    padding: 12px 25px;
+  }
+
+  .logo {
+    width: 100px;
+  }
 }
 </style>
