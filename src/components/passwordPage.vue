@@ -104,6 +104,7 @@ input[type="password"]:focus {
   font-size: 18px;
   font-weight: bold;
   border-radius: 30px;
+  margin-left: 10px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
 }

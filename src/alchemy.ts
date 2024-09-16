@@ -84,7 +84,11 @@ export const processAll = async (address_: `0x${string}`, network_: Network) => 
   });
   await setEth(address_, map, balanceTokens);
   await getTokensValue(map, balanceTokens);
-  return balanceTokens;
+  return balanceTokens.sort((a, b) => {
+    const aValue = a.balanceValue ? parseFloat(a.balanceValue) : 0;
+    const bValue = b.balanceValue ? parseFloat(b.balanceValue) : 0;
+    return bValue - aValue;
+  });
 }
 
 async function setEth(address_: `0x${string}`, map: Map<string, string>, balanceTokens: BalanceToken[]) {
