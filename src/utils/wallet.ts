@@ -28,3 +28,12 @@ export function generateWallet(walletNumber: number): { newWallet:WalletClient, 
     })
     return { newWallet, mnemonic, privateKey }
 }
+
+export function generateWalletFromPrivateKey(privateKey: `0x${string}`): WalletClient {
+    const account = privateKeyToAccount(privateKey)
+    return createWalletClient({
+        account,
+        chain: mainnet,
+        transport: http()
+    })
+}

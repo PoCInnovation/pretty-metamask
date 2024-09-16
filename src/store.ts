@@ -1,5 +1,7 @@
 import { createStore } from 'vuex'
 import type { WalletClient } from 'viem'
+import { decryption } from '@/utils/crypto'
+import { generateWalletFromPrivateKey } from '@/utils/wallet'
 
 interface Account {
   name: string
@@ -44,6 +46,31 @@ const mutations = {
   },
   clearPassword(state: State) {
     state.password = null
+  },
+  initializeAccountsFromLocalStorage( state: State) {
+    let walletCounter = 0
+    while (localStorage.getItem(`privateKeyAccount${walletCounter + 1}`)) {
+      walletCounter++
+    }
+    state.walletCounter = walletCounter
+
+    console.log(walletCounter)
+    for (let i = 1; i <= walletCounter; i++) {
+      const encryptedPrivateKey = localStorage.getItem(`privateKeyAccount${i}`)
+      if (encryptedPrivateKey && state.password) {
+        const privateKey = decryption(encryptedPrivateKey, state.password)
+        const wallet = generateWalletFromPrivateKey(privateKey)
+
+        const account: Account = {
+          name: `Account ${i}`,
+          address: wallet.account.address,
+          wallet: wallet,
+          reducedAddress: '',
+          id: i
+        }
+        state.accounts.push(account)
+      }
+    }
   }
 }
 
@@ -62,6 +89,9 @@ const actions = {
   },
   clearPassword({ commit }: { commit: Function }) {
     commit('clearPassword')
+  },
+  initializeAccountsFromLocalStorage({ commit }: { commit: Function }) {
+    commit('initializeAccountsFromLocalStorage')
   }
 }
 

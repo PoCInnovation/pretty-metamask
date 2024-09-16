@@ -6,7 +6,7 @@ import mnemonicPopUp from '@/components/wallet/mnemonicPopUp.vue'
 import { generateWallet } from '@/utils/wallet'
 import type { WalletClient } from 'viem'
 import importPopUp from './importPopUp.vue'
-import { encryption } from '../../utils/crypto'
+import { encryption } from '@/utils/crypto'
 
 interface Account {
   name: string
@@ -37,7 +37,7 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions(['addAccount', 'selectAccount']),
+    ...mapActions(['addAccount', 'selectAccount', 'initializeAccountsFromLocalStorage']),
     addAccountToStore() {
       const { newWallet, mnemonic, privateKey } = generateWallet(this.walletCounter)
       const newAccount: Account = {
@@ -48,7 +48,7 @@ export default defineComponent({
       this.mnemonic = mnemonic
       this.addAccount(newAccount)
       this.isMnemonicVisible = true
-      localStorage.setItem(`privateKeyAccount${this.walletCounter + 1}`, encryption(privateKey, this.password))
+      localStorage.setItem(`privateKeyAccount${this.walletCounter}`, encryption(privateKey, this.password))
     },
     selectAccountInStore(address: string) {
       this.selectAccount(address)
@@ -64,6 +64,14 @@ export default defineComponent({
       this.isImportVisible = false
     }
   },
+  mounted() {
+    if (this.password) {
+      console.log('mounted')
+      this.initializeAccountsFromLocalStorage()
+    } else {
+      console.log('No password set')
+    }
+  }
 })
 </script>
 
