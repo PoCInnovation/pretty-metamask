@@ -1,7 +1,7 @@
 import { HDKey } from '@scure/bip32'
 import { mnemonicToSeedSync } from '@scure/bip39'
 import { createWalletClient, http, type WalletClient } from 'viem'
-import { privateKeyToAccount, generateMnemonic, english } from 'viem/accounts'
+import { privateKeyToAccount, generateMnemonic, english, mnemonicToAccount } from 'viem/accounts'
 import { mainnet } from 'viem/chains'
 
 function uint8ToHexString(uint8Array: Uint8Array | null): `0x${string}` {
@@ -36,4 +36,23 @@ export function generateWalletFromPrivateKey(privateKey: `0x${string}`): WalletC
         chain: mainnet,
         transport: http()
     })
+}
+
+export function generateWalletFromMnemonic(mnemonic: string[]): { newWallet: WalletClient | null, privateKey: string | null} {
+    try {
+        const seed = mnemonicToSeedSync(mnemonic.join(' '))
+        const masterKey = HDKey.fromMasterSeed(seed)
+        const privateKeyUint8 = masterKey.derive(`m/44'/60'/0'/0/0`).privateKey
+        const privateKey = uint8ToHexString(privateKeyUint8)
+        const account = privateKeyToAccount(privateKey)
+        const newWallet = createWalletClient({
+            account,
+            chain: mainnet,
+            transport: http()
+        })
+        return { newWallet, privateKey }
+    } catch (error) {
+        console.error("The mnemonic format is invalid")
+        return { newWallet: null, privateKey: null }
+    }
 }

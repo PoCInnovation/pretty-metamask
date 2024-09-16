@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import walletCard from '@/components/wallet/walletCard.vue'
 import mnemonicPopUp from '@/components/wallet/mnemonicPopUp.vue'
-import { generateWallet } from '@/utils/wallet'
+import { generateWallet, generateWalletFromMnemonic } from '@/utils/wallet'
 import type { WalletClient } from 'viem'
 import importPopUp from './importPopUp.vue'
 import { encryption } from '@/utils/crypto'
@@ -45,6 +45,14 @@ export default defineComponent({
         address: newWallet.account.address,
         wallet: newWallet
       }
+      const accountExist = this.accounts.some(
+        (account: Account) => account.address === newWallet.account.address
+      )
+      if (accountExist) {
+        console.warn("Account already exists")
+        this.isMnemonicVisible = false
+        return
+      }
       this.mnemonic = mnemonic
       this.addAccount(newAccount)
       this.isMnemonicVisible = true
@@ -60,15 +68,36 @@ export default defineComponent({
     showImportPopUp() {
       this.isImportVisible = true
     },
-    closeImportPopUp() {
+    closeImportPopUp(mnemonicWords: string[]) {
+      if (mnemonicWords && mnemonicWords.every((word) => word !== '')) {
+        console.log("Importing wallet...")
+        const { newWallet, privateKey }= generateWalletFromMnemonic(mnemonicWords)
+        if (newWallet === null) {
+          this.isImportVisible = false
+          return
+        }
+        const accountExist = this.accounts.some(
+          (account: Account) => account.address === newWallet.account.address
+        )
+        if (accountExist) {
+          console.warn("Account already exists")
+          this.isImportVisible = false
+          return
+        }
+        const newAccount: Account = {
+          name: `Account ${this.walletCounter + 1}`,
+          address: newWallet.account.address,
+          wallet: newWallet
+        }
+        this.addAccount(newAccount)
+        localStorage.setItem(`privateKeyAccount${this.walletCounter}`, encryption(privateKey, this.password))
+      }
       this.isImportVisible = false
     }
   },
   mounted() {
     if (this.password && this.accounts.length === 0) {
       this.initializeAccountsFromLocalStorage()
-    } else {
-      console.log('No password set')
     }
   }
 })
