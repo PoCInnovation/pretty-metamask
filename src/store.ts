@@ -54,7 +54,6 @@ const mutations = {
     }
     state.walletCounter = walletCounter
 
-    console.log(walletCounter)
     for (let i = 1; i <= walletCounter; i++) {
       const encryptedPrivateKey = localStorage.getItem(`privateKeyAccount${i}`)
       if (encryptedPrivateKey && state.password) {
