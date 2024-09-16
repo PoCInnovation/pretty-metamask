@@ -65,7 +65,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    if (this.password) {
+    if (this.password && this.accounts.length === 0) {
       console.log('mounted')
       this.initializeAccountsFromLocalStorage()
     } else {
