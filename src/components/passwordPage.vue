@@ -1,6 +1,6 @@
 <template>
     <div id="password-page">
-        <img src='' alt="PrettyMetaMask Logo" class="logo">
+        <img src="/img/PrettyMetaMask.png" alt="PrettyMetaMask Logo" class="logo">
         <div v-if="havePassword">
             <h1 class="title">Enter your Password</h1>
             <input type="password" v-model="password" placeholder="Password" />
