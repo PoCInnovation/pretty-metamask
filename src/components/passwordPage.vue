@@ -14,15 +14,18 @@
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from 'vue'
 import CryptoJS from 'crypto-js'
+import { useStore} from 'vuex'
 
+const store = useStore()
 const password = ref('')
 const havePassword = ref(false)
 const emit = defineEmits(['isOpen'])
-
 const createPassword = () => {
     const hashedPassword = CryptoJS.SHA256(password.value).toString()
     localStorage.setItem('password', hashedPassword)
     localStorage.setItem('open-wallet', 'true')
+
+    store.dispatch('addPassword', password.value)
     emit('isOpen')
 }
 
@@ -36,6 +39,7 @@ const submitPassword = () => {
     if (hashedInputPassword === storedPassword) {
         localStorage.setItem('open-wallet', 'true')
         emit('isOpen')
+        store.dispatch('addPassword', password.value)
     } else {
         alert('Incorrect password')
         password.value = ''
