@@ -1,7 +1,7 @@
 import { HDKey } from '@scure/bip32'
 import { mnemonicToSeedSync } from '@scure/bip39'
 import { createWalletClient, http, type WalletClient } from 'viem'
-import { privateKeyToAccount, generateMnemonic, english, mnemonicToAccount } from 'viem/accounts'
+import { privateKeyToAccount, generateMnemonic, english } from 'viem/accounts'
 import { mainnet } from 'viem/chains'
 
 function uint8ToHexString(uint8Array: Uint8Array | null): `0x${string}` {
