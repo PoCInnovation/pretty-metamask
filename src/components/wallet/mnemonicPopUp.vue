@@ -38,12 +38,7 @@ export default {
       />
     </div>
     <div class="flex justify-end mt-4">
-      <button
-        @click="$emit('close')"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Skip
-      </button>
+      <button @click="$emit('close')" class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg w-auto self-end bg-blue-500 hover:bg-blue-700 text-white">Skip</button>
     </div>
   </div>
 </template>

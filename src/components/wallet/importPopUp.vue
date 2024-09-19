@@ -39,6 +39,6 @@ export default {
         v-model="mnemonicWords[index - 1]"
       />
     </div>
-    <button @click="closeWithMnemonic" class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg w-auto self-end bg-blue-500 hover:bg-blue-700">Import</button>
+    <button @click="closeWithMnemonic" class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg w-auto self-end bg-blue-500 hover:bg-blue-700 text-white">Import</button>
   </div>
 </template>
