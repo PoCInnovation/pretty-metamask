@@ -69,7 +69,7 @@ const options = {
 
 export const processAll = async (address_: `0x${string}`, network_: Network) => {
 
-  const balanceTokens: BalanceToken[] = await getBalances(address_, network_);
+  const balanceTokens: BalanceToken[] = await getBalances2(address_, network_);
 
   await updateCoinGeckoTokensValue();
   const map = new Map<string, string>();
@@ -92,9 +92,7 @@ export const processAll = async (address_: `0x${string}`, network_: Network) => 
 }
 
 async function setEth(address_: `0x${string}`, map: Map<string, string>, balanceTokens: BalanceToken[]) {
-  const weiValue = await getBalance({ 
-    address: address_,
-  })
+  const weiValue = await getBalance(address_ as string)
 
   map.set('eth', 'ethereum');
 
@@ -110,7 +108,7 @@ async function setEth(address_: `0x${string}`, map: Map<string, string>, balance
   });
 }
 
-async function getBalances(address_: `0x${string}`, network: Network): Promise<BalanceToken[]> {
+async function getBalances2(address_: `0x${string}`, network: Network): Promise<BalanceToken[]> {
   try {
     config.network = network;
     const alchemy = new Alchemy(config as AlchemyConfig);

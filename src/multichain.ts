@@ -20,7 +20,7 @@ const chainLs = [
     },
 ]
 
-const chain = ref(chainLs[0])
+const chain = ref(chainLs[1])
 
 const SwitchChain = (store: any, chainID?: number) => {
     if (chainID != undefined && chainID < chainLs.length) {
