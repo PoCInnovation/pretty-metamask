@@ -25,7 +25,7 @@ export default {
 
 <template>
   <div
-    class="relative bg-background-gray rounded-lg w-2/3 h-2/3 p-6 md:p-8 lg:p-10 flex flex-col z-10"
+    class="relative bg-background-gray rounded-lg w-2/3 h-2/3 p-6 md:p-8 lg:p-10 flex flex-col z-5000"
     @keydown.esc="$emit('close')"
     tabindex="0"
   >

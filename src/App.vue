@@ -9,6 +9,7 @@
   import { useStore } from "vuex";
 
   const open = ref(false)
+  const store = useStore()
 
   onMounted(() => {
     const isOpen = localStorage.getItem('open-wallet')
@@ -24,6 +25,7 @@
       if (document.hidden) {
         open.value = false;
         localStorage.setItem('open-wallet', 'false');
+        store.dispatch('clearPassword')
       }
     };
 

@@ -20,7 +20,7 @@ watchEffect(async () => {
 <template>
   <div id="container">
     <div id="token">
-      <img src="../../../assets/eth_logo.png" alt="ETH" id="eth-logo"/>
+      <img src="/img/eth_logo.png" alt="ETH" id="eth-logo"/>
       <div id="balance">
         <h1 v-if="balance !== null">{{ balance.toFixed(4) }} ETH</h1>
         <p v-if="balance !== null && ETH !== null">${{ (balance.toFixed(4) * ETH).toFixed(2) }} USD</p>

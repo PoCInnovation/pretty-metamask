@@ -40,6 +40,7 @@ import ERC20 from '@openzeppelin/contracts/build/contracts/ERC20.json';
 import transactionInfos from './transactionInfos.vue';
 import { x } from '../../main';
 import { fromHex } from 'viem'
+import { defineProps, computed } from 'vue';
 
 const props = defineProps({
   hash: String,
@@ -49,6 +50,7 @@ const props = defineProps({
 
 var pubClient: PublicClient;
 
+const store = useStore();
 const account = computed(() => store.getters.selectedAccount);
 const popUp = ref(false);
 const fromMe = ref(props.from);

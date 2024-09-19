@@ -12,11 +12,6 @@ import { sepolia } from 'viem/chains'
 import axios from 'axios'
 import store from './store'
 
-const pub_client = createPublicClient({
-    chain: sepolia,
-    transport: http(""),
-})
-
 const apiKey = import.meta.env.VITE_ALCHEMY_API_KEY
 const baseURL = `https://eth-sepolia.g.alchemy.com/v2/${apiKey}`;
 
@@ -27,7 +22,6 @@ const ax = axios.create({
     },
 });
 
-export const pubClient = pub_client;
 export const x = ax;
 
 const app = createApp(App)
