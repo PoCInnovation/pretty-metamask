@@ -1,5 +1,5 @@
 <template>
-    <div id="password-page">
+    <div @keydown.enter="submitPassword" id="password-page">
         <img src="/img/PrettyMetaMask.png" alt="PrettyMetaMask Logo" class="logo">
         <div v-if="havePassword">
             <h1 class="title">Enter your Password</h1>
