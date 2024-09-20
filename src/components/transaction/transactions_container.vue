@@ -2,7 +2,7 @@
   <main class="transactions">
     <div class="title">Transactions</div>
     <div class="list">
-      <transaction
+      <transaction-list
         v-for="t in transactionshash"
         :hash="t.hash"
         :devise="t.devise"
@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import transaction from './transaction.vue'
+import transactionList from './transactionList.vue'
 import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { fromHex } from 'viem'

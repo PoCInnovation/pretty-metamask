@@ -15,7 +15,7 @@
         <h4>Value: {{ props.data?.value }} {{ props.data?.devise }}</h4>
       </div>
       <footer>
-        <btn @click="$emit('close-popUp')" :txt="'Close'"></btn>
+        <btn-transaction @click="$emit('close-popUp')" :txt="'Close'"></btn-transaction>
       </footer>
     </main>
   </div>
@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { pubClient } from '../../main'
-import btn from './btn.vue'
+import btnTransaction from './btnTransaction.vue'
 
 const props = defineProps({
   open: Boolean,

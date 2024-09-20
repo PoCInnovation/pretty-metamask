@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       copied: false,
-      showInfo: false
+      showCopiable: false
     }
   },
   methods: {
@@ -32,10 +32,10 @@ export default {
         })
     },
     showInfo() {
-      this.showInfo = true
+      this.showCopiable = true
     },
     hideInfo() {
-      this.showInfo = false
+      this.showCopiable = false
     }
   }
 }
@@ -59,7 +59,7 @@ export default {
         <span class="text-white text-lg">{{ word }}</span>
       </div>
       <div
-        v-if="showInfo && !copied"
+        v-if="showCopiable && !copied"
         class="absolute bottom-full mb-2 px-2 py-1 bg-black rounded-lg"
       >
         <span class="text-xs text-white">Click to copy</span>

@@ -91,7 +91,7 @@ interface Transaction {
   }
 }
 
-const transInfos = ref(<Transaction>{
+const transInfos = ref<Transaction>({
   hash: '',
   to: '',
   from: '',
