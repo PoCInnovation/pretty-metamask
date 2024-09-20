@@ -22,12 +22,18 @@ export default defineComponent({
     importPopUp
   },
   computed: {
-    ...mapGetters(['accounts', 'selectedAccount', 'accountReducedAddresses', 'password', 'walletCounter']),
+    ...mapGetters([
+      'accounts',
+      'selectedAccount',
+      'accountReducedAddresses',
+      'password',
+      'walletCounter'
+    ]),
     visibleMnemonicAccounts(): Account[] {
       return this.accounts.filter(
         (account: Account) => this.selectedAccount === account.address && this.isMnemonicVisible
       )
-    },
+    }
   },
   data() {
     return {
@@ -49,14 +55,17 @@ export default defineComponent({
         (account: Account) => account.address === newWallet.account.address
       )
       if (accountExist) {
-        console.warn("Account already exists")
+        console.warn('Account already exists')
         this.isMnemonicVisible = false
         return
       }
       this.mnemonic = mnemonic
       this.addAccount(newAccount)
       this.isMnemonicVisible = true
-      localStorage.setItem(`privateKeyAccount${this.walletCounter}`, encryption(privateKey, this.password))
+      localStorage.setItem(
+        `privateKeyAccount${this.walletCounter}`,
+        encryption(privateKey, this.password)
+      )
     },
     selectAccountInStore(address: string) {
       this.selectAccount(address)
@@ -70,8 +79,8 @@ export default defineComponent({
     },
     closeImportPopUp(mnemonicWords: string[]) {
       if (mnemonicWords && mnemonicWords.every((word) => word !== '')) {
-        console.log("Importing wallet...")
-        const { newWallet, privateKey }= generateWalletFromMnemonic(mnemonicWords)
+        console.log('Importing wallet...')
+        const { newWallet, privateKey } = generateWalletFromMnemonic(mnemonicWords)
         if (newWallet === null) {
           this.isImportVisible = false
           return
@@ -80,7 +89,7 @@ export default defineComponent({
           (account: Account) => account.address === newWallet.account.address
         )
         if (accountExist) {
-          console.warn("Account already exists")
+          console.warn('Account already exists')
           this.isImportVisible = false
           return
         }
@@ -90,7 +99,10 @@ export default defineComponent({
           wallet: newWallet
         }
         this.addAccount(newAccount)
-        localStorage.setItem(`privateKeyAccount${this.walletCounter}`, encryption(privateKey, this.password))
+        localStorage.setItem(
+          `privateKeyAccount${this.walletCounter}`,
+          encryption(privateKey, this.password)
+        )
       }
       this.isImportVisible = false
     }
@@ -119,15 +131,28 @@ export default defineComponent({
           :isSelected="selectedAccount === account.address"
           @select="selectAccountInStore(account.address)"
         />
-        <div @click="addAccountToStore" class="bg-background-gray rounded-2xl p-3 flex items-center justify-center border-gray-600 border hover:bg-gray-600">
+        <div
+          @click="addAccountToStore"
+          class="bg-background-gray rounded-2xl p-3 flex items-center justify-center border-gray-600 border hover:bg-gray-600"
+        >
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            ></path>
           </svg>
         </div>
-        <div @click="showImportPopUp" class="bg-background-gray rounded-2xl p-3 flex items-center justify-center border-gray-600 border hover:bg-gray-600">
+        <div
+          @click="showImportPopUp"
+          class="bg-background-gray rounded-2xl p-3 flex items-center justify-center border-gray-600 border hover:bg-gray-600"
+        >
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2a1 1 0 011 1v10.586l3.293-3.293a1 1 0 011.414 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 011.414-1.414L11 13.586V3a1 1 0 011-1z"/>
-            <path d="M5 18a1 1 0 011-1h12a1 1 0 110 2H6a1 1 0 01-1-1z"/>
+            <path
+              d="M12 2a1 1 0 011 1v10.586l3.293-3.293a1 1 0 011.414 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 011.414-1.414L11 13.586V3a1 1 0 011-1z"
+            />
+            <path d="M5 18a1 1 0 011-1h12a1 1 0 110 2H6a1 1 0 01-1-1z" />
           </svg>
         </div>
       </div>
@@ -137,12 +162,16 @@ export default defineComponent({
       <span class="text-2xl">Settings</span>
     </div>
   </div>
-  <div v-if="isImportVisible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <importPopUp
-      @close="closeImportPopUp"
-    />
+  <div
+    v-if="isImportVisible"
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+  >
+    <importPopUp @close="closeImportPopUp" />
   </div>
-  <div v-if="isMnemonicVisible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  <div
+    v-if="isMnemonicVisible"
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+  >
     <mnemonicPopUp
       v-for="account in visibleMnemonicAccounts"
       :key="account.address"

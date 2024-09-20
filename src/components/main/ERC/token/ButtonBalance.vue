@@ -4,10 +4,9 @@
       <input type="text" v-model="userAddress" placeholder="Get balance for another address..." />
       <button @click="toggleMode">{{ currentMode }}</button>
       <button @click="handleButtonClick">Submit</button>
-      
     </div>
-    <p style="margin-left: 15px;" v-if="loading">Loading...</p>
-    <div v-if="balances.length > 0" class="scroll-container scrollbar"  id="tokens">
+    <p style="margin-left: 15px" v-if="loading">Loading...</p>
+    <div v-if="balances.length > 0" class="scroll-container scrollbar" id="tokens">
       <ul>
         <li v-for="(balance, index) in balances" :key="index">
           <div v-if="balance.name != null" class="TokenBox">
@@ -26,64 +25,73 @@
         </li>
       </ul>
     </div>
-    <p v-if="error" style="margin: 5px 14px;">{{ error }}</p>
+    <p v-if="error" style="margin: 5px 14px">{{ error }}</p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { processAll } from '../../../../alchemy';
-import { useStore } from 'vuex';
-import { Network } from 'alchemy-sdk';
+import { defineComponent, computed, ref, watchEffect } from 'vue'
+import { processAll } from '../../../../alchemy'
+import { useStore } from 'vuex'
+import { Network } from 'alchemy-sdk'
 
 export default defineComponent({
   name: 'TokenBalances',
   setup() {
-    const modes: Network[] = [Network.ETH_SEPOLIA, Network.ETH_MAINNET];
-    const currentMode = ref(modes[0]);
-    const store = useStore();
+    const modes: Network[] = [Network.ETH_SEPOLIA, Network.ETH_MAINNET]
+    const currentMode = ref(modes[0])
+    const store = useStore()
 
-    const userAddress = ref('');
-    const balances = ref<Array<{ name: string; logo: string; balance: string; symbol: string; decimals: number; balanceValue: string | null }>>([]);
-    const error = ref('');
-    const loading = ref(false);
+    const userAddress = ref('')
+    const balances = ref<
+      Array<{
+        name: string
+        logo: string
+        balance: string
+        symbol: string
+        decimals: number
+        balanceValue: string | null
+      }>
+    >([])
+    const error = ref('')
+    const loading = ref(false)
 
-    const account = computed(() => store?.getters?.selectedAccount || '');
+    const account = computed(() => store?.getters?.selectedAccount || '')
 
     const addressToDisplay = computed(() => {
-      return userAddress.value.trim() || account.value;
-    });
+      return userAddress.value.trim() || account.value
+    })
 
     function toggleMode() {
-      currentMode.value = currentMode.value === modes[0] ? modes[1] : modes[0];
+      currentMode.value = currentMode.value === modes[0] ? modes[1] : modes[0]
     }
 
     const handleButtonClick = async () => {
-      loading.value = true;
-      error.value = '';
-      balances.value = [];
+      loading.value = true
+      error.value = ''
+      balances.value = []
       try {
-        const addressToUse = addressToDisplay.value;
+        const addressToUse = addressToDisplay.value
         if (!addressToUse) {
-          error.value = 'No address provided.';
-          return;
+          error.value = 'No address provided.'
+          return
         }
-        balances.value = await processAll(addressToUse, currentMode.value);
-        console.log(account.value);
+        balances.value = await processAll(addressToUse, currentMode.value)
+        console.log(account.value)
         if (balances.value.length === 0) {
-          error.value = `No balances found for the address: ${addressToUse}.`;
+          error.value = `No balances found for the address: ${addressToUse}.`
         }
       } catch (err) {
-        error.value = 'An error occurred while fetching balances.';
-        console.error(err);
+        error.value = 'An error occurred while fetching balances.'
+        console.error(err)
       } finally {
-        loading.value = false;
+        loading.value = false
       }
-    };
+    }
 
     watchEffect(() => {
-      handleButtonClick();
-    });
+      handleButtonClick()
+    })
 
     return {
       modes,
@@ -95,9 +103,9 @@ export default defineComponent({
       addressToDisplay,
       toggleMode,
       handleButtonClick
-    };
+    }
   }
-});
+})
 </script>
 
 <style scoped>
@@ -154,7 +162,7 @@ export default defineComponent({
   flex: 1;
   text-align: center;
   font-size: 16px;
-  max-width: 35%; 
+  max-width: 35%;
 }
 
 .SymbolPrice {
@@ -177,7 +185,6 @@ export default defineComponent({
   white-space: nowrap;
 }
 
-
 .input-container {
   display: flex;
   align-items: center;
@@ -185,7 +192,7 @@ export default defineComponent({
   margin: 0 14px;
 }
 
-input[type="text"] {
+input[type='text'] {
   background-color: #333;
   color: white;
   border: 1px solid #555;
@@ -197,17 +204,17 @@ input[type="text"] {
   transition: border-color 0.3s ease;
 }
 
-input[type="text"]::placeholder {
+input[type='text']::placeholder {
   color: #aaa;
 }
 
-input[type="text"]:focus {
+input[type='text']:focus {
   border-color: #777; /* Lighter border color on focus */
   outline: none; /* Remove default outline */
 }
 
 button {
-  background-color: #007BFF; /* Primary button color */
+  background-color: #007bff; /* Primary button color */
   color: white; /* Text color of the button */
   border: none; /* Remove default border */
   border-radius: 10px; /* Rounded corners */
@@ -221,30 +228,25 @@ button:hover {
   background-color: #0056b3; /* Darker button color on hover */
 }
 
-.scrollbar
-{
-	margin-bottom: 25px;
+.scrollbar {
+  margin-bottom: 25px;
   scrollbar-width: none;
 }
 
-#tokens::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: #191919;
+#tokens::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #191919;
 }
 
-#tokens::-webkit-scrollbar
-{
-	width: 12px;
-	background-color: #191919;
+#tokens::-webkit-scrollbar {
+  width: 12px;
+  background-color: #191919;
 }
 
-#tokens::-webkit-scrollbar-thumb
-{
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #2c3e50;
+#tokens::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #2c3e50;
 }
-
 </style>

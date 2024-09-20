@@ -47,7 +47,7 @@ const mutations = {
   clearPassword(state: State) {
     state.password = null
   },
-  initializeAccountsFromLocalStorage( state: State) {
+  initializeAccountsFromLocalStorage(state: State) {
     let walletCounter = 0
     while (localStorage.getItem(`privateKeyAccount${walletCounter + 1}`)) {
       walletCounter++
@@ -98,7 +98,7 @@ const getters = {
   accounts: (state: State) => state.accounts,
   selectedAccount: (state: State) => state.selectedAccount,
   accountReducedAddresses: (state: State) => {
-    return state.accounts.map(account => ({
+    return state.accounts.map((account) => ({
       ...account,
       reducedAddress: `${account.address.slice(0, 7)}...${account.address.slice(-5)}`
     }))

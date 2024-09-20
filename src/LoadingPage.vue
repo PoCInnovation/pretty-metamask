@@ -4,12 +4,11 @@ import VerticalNavbar from '@/components/main/VerticalNavbar.vue'
 
 <template>
   <div id="container">
-    <header>
-    </header>
+    <header></header>
     <main>
       <VerticalNavbar />
       <div id="info">
-        <div id="ERC" >Please connect your wallet</div>
+        <div id="ERC">Please connect your wallet</div>
         <div id="transactions" />
       </div>
     </main>
@@ -33,7 +32,7 @@ import VerticalNavbar from '@/components/main/VerticalNavbar.vue'
   background-color: rgb(3, 3, 3);
 }
 header {
-  height:10vh;
+  height: 10vh;
   background-color: rgb(25, 25, 25);
   color: white;
   width: 100vw;

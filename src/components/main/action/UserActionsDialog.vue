@@ -6,7 +6,7 @@ defineProps(['type'])
 
 <template>
   <div id="background">
-    <SendAction v-if="type === 'send'" @close-dialog="$emit('close-dialog')"/>
+    <SendAction v-if="type === 'send'" @close-dialog="$emit('close-dialog')" />
   </div>
 </template>
 

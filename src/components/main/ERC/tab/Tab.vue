@@ -1,13 +1,13 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'TabERC',
   props: {
     name: String,
-    selected: Boolean,
+    selected: Boolean
   }
-});
+})
 </script>
 
 <template>
@@ -33,7 +33,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1E6BDE;
+  background-color: #1e6bde;
   border-radius: 6px;
   height: 100%;
   width: 100%;
