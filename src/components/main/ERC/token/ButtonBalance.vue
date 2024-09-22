@@ -2,20 +2,25 @@
   <div id="container">
     <div class="input-container">
       <input type="text" v-model="userAddress" placeholder="Get balance for another address..." />
+      <button @click="toggleMode">{{ currentMode }}</button>
       <button @click="handleButtonClick">Submit</button>
+      
     </div>
-    <p v-if="loading">Loading...</p>
+    <p style="margin-left: 15px;" v-if="loading">Loading...</p>
     <div v-if="balances.length > 0" class="scroll-container scrollbar"  id="tokens">
       <ul>
         <li v-for="(balance, index) in balances" :key="index">
           <div v-if="balance.name != null" class="TokenBox">
-            <div class="TokenLeft">
-              <img :src="balance.logo ? balance.logo : 'img/question.png'" :alt="balance.name" />
+            <div class="LogoName">
+              <img :src="balance.logo" :alt="balance.name" />
               <span class="TitleToken">{{ balance.name }}</span>
             </div>
-            <div class="TokenRight">
+            <div class="Quantity">
               <span>{{ balance.balance }}</span>
+            </div>
+            <div class="SymbolPrice">
               <span>{{ balance.symbol }}</span>
+              <span v-if="balance.balanceValue != null">{{ balance.balanceValue }}$</span>
             </div>
           </div>
         </li>
@@ -27,16 +32,20 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { getBalances } from '../../../../alchemy';
+import { processAll } from '../../../../alchemy';
 import { useStore } from 'vuex';
+import { Network } from 'alchemy-sdk';
 
 export default defineComponent({
   name: 'TokenBalances',
   setup() {
     const store = useStore();
+    const myChain = computed(() => store.getters.chain);
+    const modes = [Network.ETH_SEPOLIA, Network.ETH_MAINNET];
+    const currentMode = ref(modes[0]);
 
     const userAddress = ref('');
-    const balances = ref<Array<{ name: string | null; logo: string | null; balance: string; symbol: string | null; decimals: number | null }>>([]);
+    const balances = ref<Array<{ name: string; logo: string; balance: string; symbol: string; decimals: number; balanceValue: string | null }>>([]);
     const error = ref('');
     const loading = ref(false);
 
@@ -45,6 +54,10 @@ export default defineComponent({
     const addressToDisplay = computed(() => {
       return userAddress.value.trim() || account.value;
     });
+
+    function toggleMode() {
+      currentMode.value = currentMode.value === modes[0] ? modes[1] : modes[0];
+    }
 
     const handleButtonClick = async () => {
       loading.value = true;
@@ -56,7 +69,7 @@ export default defineComponent({
           error.value = 'No address provided.';
           return;
         }
-        balances.value = await getBalances(addressToUse);
+        balances.value = await processAll(addressToUse, currentMode.value);
         console.log(account.value);
         if (balances.value.length === 0) {
           error.value = `No balances found for the address: ${addressToUse}.`;
@@ -73,12 +86,21 @@ export default defineComponent({
       handleButtonClick();
     });
 
+    watchEffect(() => {
+      if (myChain.value) {
+        handleButtonClick();
+      }
+    });
+
     return {
+      modes,
+      currentMode,
       userAddress,
       balances,
       error,
       loading,
-      account,
+      addressToDisplay,
+      toggleMode,
       handleButtonClick
     };
   }
@@ -102,6 +124,7 @@ export default defineComponent({
 .TokenBox {
   display: flex;
   justify-content: space-between;
+  width: 100%;
   align-items: center;
   padding: 10px 36px;
   margin-top: 1vh;
@@ -114,60 +137,75 @@ export default defineComponent({
   background-color: rgb(16, 19, 19); /* Darker background on hover */
 }
 
-.TokenBox img {
+.LogoName {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 25%;
+  overflow: hidden;
+}
+
+.LogoName span {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.LogoName img {
   max-width: 50px;
   width: 2vw;
-  height: auto; /* Maintain aspect ratio */
-  margin-right: 10px; /* Spacing between image and text */
+  height: auto;
+  margin-right: 10px;
 }
 
-.TokenLeft {
+.Quantity {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  max-width: 35%; 
+}
+
+.SymbolPrice {
   display: flex;
   align-items: center;
+  flex: 1;
+  justify-content: flex-end;
+  max-width: 30%;
 }
 
-.TokenRight {
-  display: flex;
-  align-items: center;
-  margin-left: auto; /* Push the right section to the right */
-}
-
-.TokenRight span {
+.SymbolPrice span {
   margin-left: 5px;
-  text-align: right; /* Align text to the right */
+  text-align: right;
+  overflow: hidden;
 }
 
 .TokenBox span {
   margin: 0 5px;
   color: aliceblue;
-  white-space: nowrap; /* Prevent line break for better alignment */
+  white-space: nowrap;
 }
 
-.TitleToken {
-  font-weight: bold; /* Highlight the token name */
-}
 
 .input-container {
   display: flex;
-  align-items: center; /* Vertically center the items */
-  gap: 10px; /* Space between the input and button */
+  align-items: center;
+  gap: 10px;
   margin: 0 14px;
 }
 
 input[type="text"] {
-  background-color: #333; /* Dark background color */
-  color: white; /* White text color */
-  border: 1px solid #555; /* Subtle border color */
-  border-radius: 10px; /* Rounded corners */
-  padding: 10px; /* Padding inside the input */
-  width: 300px; /* Fixed width for the input */
-  font-size: 16px; /* Font size for better readability */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-  transition: border-color 0.3s ease; /* Smooth transition for focus effect */
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 10px;
+  padding: 10px;
+  width: 300px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
 }
 
 input[type="text"]::placeholder {
-  color: #aaa; /* Light grey placeholder text color */
+  color: #aaa;
 }
 
 input[type="text"]:focus {
@@ -192,8 +230,8 @@ button:hover {
 
 .scrollbar
 {
-	overflow-y: scroll;
 	margin-bottom: 25px;
+  scrollbar-width: none;
 }
 
 #tokens::-webkit-scrollbar-track

@@ -8,6 +8,7 @@ import { getNFTsForOwner } from '@/getNFTsForOwner';
 
 const store = useStore();
 const account = computed(() => store.getters.selectedAccount);
+const chain = computed(() => store.getters.chain);
 
 const dialogVisible = ref(false);
 const NFTsList = ref([]);
@@ -15,7 +16,7 @@ let importedNFTs = window.localStorage.getItem('ImportedNFTs');
 
 onMounted(async () => {
   if (account.value) {
-    NFTsList.value = await getNFTsForOwner(account.value, "eth-mainnet");
+    NFTsList.value = await getNFTsForOwner(account.value, chain.value.alchemyURLNFT);
   }
 
   if (importedNFTs) {
