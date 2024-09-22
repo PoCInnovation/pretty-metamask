@@ -22,9 +22,11 @@
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        open.value = false;
-        localStorage.setItem('open-wallet', 'false');
-        store.dispatch('clearPassword')
+        if (sessionStorage.getItem('lock-wallet') === 'true') {
+          open.value = false;
+          localStorage.setItem('open-wallet', 'false');
+          store.dispatch('clearPassword')
+        }
       }
     };
 
