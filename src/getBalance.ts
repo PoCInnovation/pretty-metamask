@@ -1,6 +1,9 @@
 import { x } from "./main";
 
 export const getBalance = async (address: string): Promise<bigint> => {
+  if (address === '' || address == undefined) {
+    return BigInt(0);
+  }
   try {
     const response = await x.post('/', {
       jsonrpc: '2.0',

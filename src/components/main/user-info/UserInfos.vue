@@ -8,10 +8,17 @@ const store = useStore();
 const account = computed(() => store.getters.selectedAccount);
 const balance = ref<number | null>(null);
 const ETH = ref<number | null>(null);
+const myChain = computed(() => store.getters.chain);
 
 ETH.value = await exchangeRates('ETH').then((res: any) => res.data.rates.USD);
 watchEffect(async () => {
   if (account.value) {
+    balance.value = await getBalance(account.value).then((res: number) => Number(res) / Number(BigInt(1000000000000000000)));
+  }
+});
+
+watchEffect(async () => {
+  if (myChain.value) {
     balance.value = await getBalance(account.value).then((res: number) => Number(res) / Number(BigInt(1000000000000000000)));
   }
 });

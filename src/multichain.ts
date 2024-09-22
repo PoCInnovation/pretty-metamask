@@ -1,7 +1,7 @@
 import { sepolia, mainnet } from 'viem/chains'
-import { createPublicClient, http } from 'viem'
 import { ref } from 'vue'
 import { x } from './main'
+import { Network } from 'alchemy-sdk';
 
 const apiKey = import.meta.env.VITE_ALCHEMY_API_KEY
 
@@ -11,12 +11,14 @@ const chainLs = [
         chain: sepolia,
         alchemyURL: `https://eth-sepolia.g.alchemy.com/v2/${apiKey}`,
         alchemyURLNFT: `https://eth-sepolia.g.alchemy.com/nft/v3/${apiKey}/getNFTsForOwner/`,
+        alchemyNetwork: Network.ETH_SEPOLIA
     },
     {
         name: "ethereum",
         chain: mainnet,
         alchemyURL: `https://eth-mainnet.g.alchemy.com/v2/${apiKey}`,
         alchemyURLNFT: `https://eth-mainnet.g.alchemy.com/nft/v3/${apiKey}/getNFTsForOwner/`,
+        alchemyNetwork: Network.ETH_MAINNET
     },
 ]
 
@@ -38,16 +40,10 @@ const SwitchChain = (store: any, chainID?: number) => {
     chain.value = chainLs[chainIdx]
     x.defaults.baseURL = chainLs[chainIdx].alchemyURL
     console.log("Switched to chain: ", chain.value)
-    // const newPubClient = createPublicClient({
-    //     chain: chain.value.chain,
-    //     transport: http(),
-    // })
-    // console.log("newPubClient: ", newPubClient)
 
     if (store) {
         store.dispatch('saveChain', { chain: chain.value })
         store.dispatch('switchWalletChain')
-        // store.dispatch('savePubClient', { pubClient: newPubClient })
     } else {
         console.error('Vuex store is not initialized')
     }
