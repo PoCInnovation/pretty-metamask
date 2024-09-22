@@ -4,6 +4,7 @@
   import ERC from "./components/main/ERC/ERC.vue";
   import { onMounted, ref, onUnmounted } from "vue";
   import passwordPage from "./components/passwordPage.vue";
+  import HeaderMenu from "./components/wallet/headerMenu.vue"
   import { useStore } from 'vuex'
 
   const open = ref(false)
@@ -45,6 +46,7 @@
 <template>
   <div v-if="open" id="container">
     <header>
+      <HeaderMenu />
     </header>
     <main>
       <VerticalNavbar />
@@ -74,6 +76,7 @@
     color: white;
     width: 100vw;
     border-bottom: 1px solid rgb(3, 3, 3);
+    display: flex;
   }
   main {
     display: flex;
