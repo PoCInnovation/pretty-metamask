@@ -3,8 +3,8 @@
     <img class="iconeBoxImage" style="cursor: zoom-in;" src="/img/gas-station.png" alt="Ether gas price">
     <p style="margin-right: 1.5rem;">{{gasValue}}</p>
     <button @click="toggleLock">
-      <img :src="isLocked ? '/img/padlock.png' : '/img/unlock_padlock.png'" 
-           :class="{'iconeBoxImage': true, 'blueLock': isLocked}" 
+      <img :src="!isLocked ? '/img/unlock_padlock.png' : '/img/padlock.png'" 
+           class="iconeBoxImage" 
            alt="toggle lock">
     </button>
   </div>
@@ -18,15 +18,19 @@ import { Network } from 'alchemy-sdk';
 export default defineComponent({
   name: 'HeaderMenu',
   setup() {
-    // Reactive variable to toggle between locked/unlocked state
-    const isLocked = ref(true);
+
+    if (!sessionStorage.getItem('lock-wallet')) {
+      sessionStorage.setItem('lock-wallet', 'true');
+    }
+    
+    const isLocked = ref(sessionStorage.getItem('lock-wallet') === "true");
+
     const gasValue = ref<string | null>(null);
     let intervalId: NodeJS.Timeout | undefined;
 
-
-    // Function to toggle the lock state
     const toggleLock = () => {
       isLocked.value = !isLocked.value;
+      sessionStorage.setItem('lock-wallet', String(isLocked.value))
     };
 
     const fetchGasPrice = async () => {
@@ -79,9 +83,5 @@ button {
 
 button:hover .iconeBoxImage {
   transform: scale(1.1);
-}
-
-.blueLock {
-  filter: hue-rotate(200deg); /* Adds blue tint when locked */
 }
 </style>
