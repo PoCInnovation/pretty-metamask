@@ -17,12 +17,13 @@
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from 'vue'
 import CryptoJS from 'crypto-js'
-import { useStore} from 'vuex'
+import { useStore } from 'vuex'
 
 const store = useStore()
 const password = ref('')
 const havePassword = ref(false)
 const emit = defineEmits(['isOpen'])
+
 const createPassword = () => {
     const hashedPassword = CryptoJS.SHA256(password.value).toString()
     localStorage.setItem('password', hashedPassword)
