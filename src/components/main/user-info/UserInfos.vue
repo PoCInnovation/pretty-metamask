@@ -75,6 +75,7 @@ watchEffect(async () => {
     background-color: white;
     border-radius: 50px;
     margin-right: 26px;
+    padding: 5px;
   }
   #token {
     display: flex;
