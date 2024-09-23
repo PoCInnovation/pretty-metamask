@@ -2,9 +2,6 @@
   <div id="container">
     <div class="input-container">
       <input type="text" v-model="userAddress" placeholder="Get balance for another address..." />
-      <button>{{ currentMode }}</button>
-      <button @click="handleButtonClick">Submit</button>
-      
     </div>
     <p style="margin-left: 15px;" v-if="loading">Loading...</p>
     <div v-if="balances.length > 0" class="scroll-container scrollbar"  id="tokens">
