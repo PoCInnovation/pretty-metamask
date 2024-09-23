@@ -39,9 +39,10 @@ import { Network } from 'alchemy-sdk';
 export default defineComponent({
   name: 'TokenBalances',
   setup() {
-    const modes: Network[] = [Network.ETH_SEPOLIA, Network.ETH_MAINNET];
-    const currentMode = ref(modes[0]);
     const store = useStore();
+    const myChain = computed(() => store.getters.chain);
+    const modes = [Network.ETH_SEPOLIA, Network.ETH_MAINNET];
+    const currentMode = ref(modes[0]);
 
     const userAddress = ref('');
     const balances = ref<Array<{ name: string; logo: string; balance: string; symbol: string; decimals: number; balanceValue: string | null }>>([]);
@@ -83,6 +84,12 @@ export default defineComponent({
 
     watchEffect(() => {
       handleButtonClick();
+    });
+
+    watchEffect(() => {
+      if (myChain.value) {
+        handleButtonClick();
+      }
     });
 
     return {

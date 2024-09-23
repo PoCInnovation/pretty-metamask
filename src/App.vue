@@ -5,7 +5,9 @@
   import { onMounted, ref, onUnmounted } from "vue";
   import passwordPage from "./components/passwordPage.vue";
   import HeaderMenu from "./components/wallet/headerMenu.vue"
-  import { useStore } from 'vuex'
+  import chainSwitcher from "./components/chainSwitcher.vue";
+  import { SwitchChain } from "./multichain";
+  import { useStore } from "vuex";
 
   const open = ref(false)
   const store = useStore()
@@ -15,6 +17,8 @@
     if (isOpen === 'true') {
       open.value = true
     }
+    // const store = useStore()
+    // SwitchChain(store)
 
     setInterval(checkOpen, 5000);
 
@@ -48,6 +52,8 @@
 <template>
   <div v-if="open" id="container">
     <header>
+      <div class="logo"><h1>✨Pretty-Metamask✨</h1></div>
+      <chainSwitcher />
       <HeaderMenu />
     </header>
     <main>
@@ -79,6 +85,12 @@
     width: 100vw;
     border-bottom: 1px solid rgb(3, 3, 3);
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5vw;
+  }
+  .logo {
+    font-size: 2.4rem;
   }
   main {
     display: flex;
