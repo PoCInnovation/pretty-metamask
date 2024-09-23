@@ -53,8 +53,10 @@
   <div v-if="open" id="container">
     <header>
       <div class="logo"><h1>✨Pretty-Metamask✨</h1></div>
-      <chainSwitcher />
-      <HeaderMenu />
+      <div class="boxHeaderMenu">
+        <chainSwitcher />
+        <HeaderMenu />
+      </div>
     </header>
     <main>
       <VerticalNavbar />
@@ -88,6 +90,10 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 5vw;
+  }
+
+  .boxHeaderMenu {
+    display: flex;
   }
   .logo {
     font-size: 2.4rem;
