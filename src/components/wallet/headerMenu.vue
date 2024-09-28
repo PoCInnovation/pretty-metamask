@@ -11,6 +11,7 @@
 </template> 
 
 <script lang="ts">
+import { chain } from '../../multichain'
 import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import { getGas } from '../../getGas'
 import { Network } from 'alchemy-sdk';
@@ -34,7 +35,7 @@ export default defineComponent({
     };
 
     const fetchGasPrice = async () => {
-      gasValue.value = await getGas(Network.ETH_MAINNET);
+      gasValue.value = await getGas(chain.value.alchemyNetwork);
     };
 
     onMounted(() => {

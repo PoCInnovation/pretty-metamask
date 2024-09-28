@@ -2,6 +2,7 @@ import type { AlchemyConfig } from "alchemy-sdk";
 import { Network, Alchemy, Utils } from "alchemy-sdk";
 import { BigNumber } from 'bignumber.js';
 import { getBalance } from './getBalance'
+import { chain } from './multichain'
 
 interface Config {
   apiKey: string;
@@ -10,7 +11,7 @@ interface Config {
 
 const config: Config = {
   apiKey: 'aKVhzlNCwLMUs1hm_m7G3g00_vcuBkKh',
-  network: Network.ETH_MAINNET,
+  network: chain.value.alchemyNetwork,
 };
 
 interface CoinGeckoToken {
@@ -112,6 +113,7 @@ async function setEth(address_: `0x${string}`, map: Map<string, string>, balance
 async function getBalances2(address_: `0x${string}`, network: Network): Promise<BalanceToken[]> {
   try {
     config.network = network;
+    console.log("network is ",network);
     const alchemy = new Alchemy(config as AlchemyConfig);
     const balances = await alchemy.core.getTokenBalances(address_);
     const nonZeroBalances = balances.tokenBalances.filter((token) => {
