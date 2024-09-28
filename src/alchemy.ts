@@ -10,7 +10,7 @@ interface Config {
 }
 
 const config: Config = {
-  apiKey: 'aKVhzlNCwLMUs1hm_m7G3g00_vcuBkKh',
+  apiKey: import.meta.env.VITE_ALCHEMY_API_KEY,
   network: chain.value.alchemyNetwork,
 };
 
