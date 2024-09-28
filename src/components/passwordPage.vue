@@ -3,7 +3,7 @@
         <img src="/img/PrettyMetaMask.png" alt="PrettyMetaMask Logo" class="logo">
         <div v-if="havePassword">
             <h1 class="title">Enter your Password</h1>
-            <input type="password" v-model="password" placeholder="Password" />
+            <input type="password" @keyup.enter="submitPassword" v-model="password" placeholder="Password" />
             <button class="btn" @click="submitPassword">Enter</button>
         </div>
         <div v-else>

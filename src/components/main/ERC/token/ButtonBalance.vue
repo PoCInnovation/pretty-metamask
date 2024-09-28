@@ -2,9 +2,6 @@
   <div id="container">
     <div class="input-container">
       <input type="text" v-model="userAddress" placeholder="Get balance for another address..." />
-      <button @click="toggleMode">{{ currentMode }}</button>
-      <button @click="handleButtonClick">Submit</button>
-      
     </div>
     <p style="margin-left: 15px;" v-if="loading">Loading...</p>
     <div v-if="balances.length > 0" class="scroll-container scrollbar"  id="tokens">
@@ -31,18 +28,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect } from 'vue';
+import { defineComponent, computed, ref, watchEffect, watch } from 'vue';
 import { processAll } from '../../../../alchemy';
+import { chain } from '../../../../multichain'
 import { useStore } from 'vuex';
-import { Network } from 'alchemy-sdk';
 
 export default defineComponent({
   name: 'TokenBalances',
   setup() {
     const store = useStore();
     const myChain = computed(() => store.getters.chain);
-    const modes = [Network.ETH_SEPOLIA, Network.ETH_MAINNET];
-    const currentMode = ref(modes[0]);
+    const currentMode = ref(chain.value.alchemyNetwork);
 
     const userAddress = ref('');
     const balances = ref<Array<{ name: string; logo: string; balance: string; symbol: string; decimals: number; balanceValue: string | null }>>([]);
@@ -55,10 +51,6 @@ export default defineComponent({
       return userAddress.value.trim() || account.value;
     });
 
-    function toggleMode() {
-      currentMode.value = currentMode.value === modes[0] ? modes[1] : modes[0];
-    }
-
     const handleButtonClick = async () => {
       loading.value = true;
       error.value = '';
@@ -70,17 +62,23 @@ export default defineComponent({
           return;
         }
         balances.value = await processAll(addressToUse, currentMode.value);
-        console.log(account.value);
         if (balances.value.length === 0) {
           error.value = `No balances found for the address: ${addressToUse}.`;
         }
       } catch (err) {
         error.value = 'An error occurred while fetching balances.';
-        console.error(err);
       } finally {
         loading.value = false;
       }
     };
+
+    watch(
+      () => chain.value,
+      (newChain) => {
+        currentMode.value = newChain.alchemyNetwork; // Update currentMode when chain changes
+        handleButtonClick(); // Optionally refetch balances on chain change
+      }
+    );
 
     watchEffect(() => {
       handleButtonClick();
@@ -93,14 +91,12 @@ export default defineComponent({
     });
 
     return {
-      modes,
       currentMode,
       userAddress,
       balances,
       error,
       loading,
       addressToDisplay,
-      toggleMode,
       handleButtonClick
     };
   }

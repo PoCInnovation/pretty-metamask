@@ -4,6 +4,7 @@
   import ERC from "./components/main/ERC/ERC.vue";
   import { onMounted, ref, onUnmounted } from "vue";
   import passwordPage from "./components/passwordPage.vue";
+  import HeaderMenu from "./components/wallet/headerMenu.vue"
   import chainSwitcher from "./components/chainSwitcher.vue";
   import { SwitchChain } from "./multichain";
   import { useStore } from "vuex";
@@ -23,9 +24,11 @@
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        open.value = false;
-        localStorage.setItem('open-wallet', 'false');
-        store.dispatch('clearPassword')
+        if (sessionStorage.getItem('lock-wallet') === 'true') {
+          open.value = false;
+          localStorage.setItem('open-wallet', 'false');
+          store.dispatch('clearPassword')
+        }
       }
     };
 
@@ -50,7 +53,10 @@
   <div v-if="open" id="container">
     <header>
       <div class="logo"><h1>✨Pretty-Metamask✨</h1></div>
-      <chainSwitcher />
+      <div class="headerBox">
+        <chainSwitcher />
+        <HeaderMenu />
+      </div>
     </header>
     <main>
       <VerticalNavbar />
@@ -85,6 +91,11 @@
     align-items: center;
     padding: 0 5vw;
   }
+
+  .headerBox {
+    display: flex;
+  }
+
   .logo {
     font-size: 2.4rem;
   }
