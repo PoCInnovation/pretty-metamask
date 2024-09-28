@@ -1,7 +1,15 @@
 import { createStore } from 'vuex'
-import type { WalletClient } from 'viem'
+import type { PublicClient, WalletClient } from 'viem'
 import { decryption } from '@/utils/crypto'
 import { generateWalletFromPrivateKey } from '@/utils/wallet'
+import { createPublicClient, http } from 'viem'
+import { switchChain } from 'viem/actions';
+import { chain } from './multichain';
+
+const pub_client = createPublicClient({
+  chain: chain.value.chain,
+  transport: http(),
+})
 
 interface Account {
   name: string
@@ -16,11 +24,15 @@ interface State {
   selectedAccount: string | null
   password: string | null
   walletCounter: number
+  chain: any | null;
+  pubClient: PublicClient;
 }
 
 const state: State = {
   accounts: [],
   selectedAccount: null,
+  chain: chain.value.chain,
+  pubClient: pub_client,
   password: null,
   walletCounter: 0
 }
@@ -70,6 +82,18 @@ const mutations = {
         state.accounts.push(account)
       }
     }
+  },
+  switchWalletChain(state: State) {
+    state.accounts.forEach(account => {
+      switchChain(account.wallet, state.chain as typeof pub_client.chain);
+    });
+    state.pubClient.chain = state.chain.chain.chain;
+  },
+  saveChain(state: State, chain: any) {
+    state.chain = chain;
+  },
+  savePubClient(state: State, pubClient: any) {
+    state.pubClient = pubClient;
   }
 }
 
@@ -81,7 +105,7 @@ const actions = {
     commit('selectAccount', address)
   },
   clearAccounts({ commit }: { commit: Function }) {
-    commit('clearAccounts')
+    commit('clearAccounts');
   },
   addPassword({ commit }: { commit: Function }, password: string) {
     commit('addPassword', password)
@@ -91,8 +115,17 @@ const actions = {
   },
   initializeAccountsFromLocalStorage({ commit }: { commit: Function }) {
     commit('initializeAccountsFromLocalStorage')
+  },
+  switchWalletChain({ commit }: { commit: Function }) {
+    commit('switchWalletChain');
+  },
+  saveChain({ commit }: { commit: Function }, chain: any) {
+    commit('saveChain', chain);
+  },
+  savePubClient({ commit }: { commit: Function }, pubClient: any) {
+    commit('savePubClient', pubClient);
   }
-}
+};
 
 const getters = {
   accounts: (state: State) => state.accounts,
@@ -104,7 +137,9 @@ const getters = {
     }))
   },
   password: (state: State) => state.password,
-  walletCounter: (state: State) => state.walletCounter
+  walletCounter: (state: State) => state.walletCounter,
+  chain: (state: State) => state.chain,
+  pubClient: (state: State) => state.pubClient,
 }
 
 const store = createStore({

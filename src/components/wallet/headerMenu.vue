@@ -61,9 +61,8 @@ export default defineComponent({
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  width: 100%;
   padding: 0.5rem;
-  margin-right: 2rem;
+  margin-left: 2rem;
 }
 
 .iconeBoxImage {

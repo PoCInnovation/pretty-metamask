@@ -33,17 +33,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
-import { formatEther, getContract } from 'viem';
+import { formatEther, getContract, type PublicClient } from 'viem';
 import ERC20 from '@openzeppelin/contracts/build/contracts/ERC20.json';
 import transactionInfos from './transactionInfos.vue';
+import { x } from '../../main';
+import { fromHex } from 'viem'
+import { defineProps, computed } from 'vue';
 
 const props = defineProps({
   hash: String,
   devise: String,
   from: Boolean
 });
+
+var pubClient: PublicClient;
 
 const store = useStore();
 const account = computed(() => store.getters.selectedAccount);
@@ -103,6 +108,8 @@ const getDateFormated = (timestamp: number) => {
 };
 
 const getInfos = () => {
+  const store = useStore();
+  pubClient = store.getters.pubClient;
   if (account.value) {
     getTransactionInfos(props.hash as `0x${string}`);
   }
@@ -133,37 +140,51 @@ const getErc20Infos = async (transactionInfos: any, transactionReceipt: any, tra
 };
 
 const getTransactionInfos = async (transactionHash: `0x${string}`) => {
-  const transactionInfos = await pubClient.getTransaction({
-    hash: transactionHash
-  });
-  const data = {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "eth_getBlockByHash",
-    "params": [
-      transactionInfos.blockHash,
-      false
-    ]
-  };
-  const transactionReceipt = await pubClient.getTransactionReceipt({
-    hash: transactionHash
-  });
+  var transactionInfos: any;
+  var transactionReceipt: any;
   try {
-    transInfos.value.timestamp = (await x.post('/', data)).data.result.timestamp;
-  } catch (error) {
+    var transactionInfos = (await x.post('/', {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "eth_getTransactionByHash",
+      "params": [
+        transactionHash
+      ]
+    })).data.result;
+    var transactionReceipt = (await x.post('/', {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "eth_getTransactionReceipt",
+      "params": [
+        transactionHash
+      ]
+    })).data.result;
+    transInfos.value.timestamp = (await x.post('/', {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "eth_getBlockByHash",
+      "params": [
+        transactionInfos.blockHash,
+        false
+      ]
+    })).data.result.timestamp;
+  }  catch (error) {
     console.log(error);
+    console.log("transactionInfos: ", transactionInfos);
+    console.log("transactionReceipt: ", transactionReceipt);
+    console.log("transInfos: ", transInfos);
   }
   transInfos.value.hash = transactionInfos.hash;
-  transInfos.value.to = String(transactionInfos.to);
+  transInfos.value.to = transactionInfos.to;
   transInfos.value.from = transactionInfos.from;
   transInfos.value.blockHash = transactionInfos.blockHash;
-  transInfos.value.blockNumber = Number(transactionInfos.blockNumber);
-  transInfos.value.value = formatEther(transactionInfos.value);
-  transInfos.value.status = transactionReceipt.status;
+  transInfos.value.blockNumber = fromHex(transactionInfos.blockNumber, "number");
+  transInfos.value.value = formatEther(fromHex(transactionInfos.value, "bigint"));
+  transInfos.value.status = parseInt(transactionReceipt.status, 16).toString() == "1" ? "success" : "failed";
   transInfos.value.date = getDateFormated(transInfos.value.timestamp);
   transInfos.value.logs.receipt = transactionReceipt;
   transInfos.value.logs.transaction = transactionInfos;
-  if (transInfos.value.devise == undefined)
+  if (!transInfos.value.devise)
     await getErc20Infos(transactionInfos, transactionReceipt, transInfos);
   return transactionInfos;
 };
