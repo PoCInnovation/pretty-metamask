@@ -1,4 +1,4 @@
-trouv<template>
+<template>
   <div class="box" @click="openPopup()">
     <div class="icone">
       <svg
