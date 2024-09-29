@@ -1,60 +1,64 @@
 <template>
   <div class="iconeBox">
-    <img class="iconeBoxImage" style="cursor: zoom-in;" src="/img/gas-station.png" alt="Ether gas price">
-    <p style="margin-right: 1.5rem;">{{gasValue}}</p>
+    <img
+      class="iconeBoxImage"
+      style="cursor: zoom-in"
+      src="/img/gas-station.png"
+      alt="Ether gas price"
+    />
+    <p style="margin-right: 1.5rem">{{ gasValue }}</p>
     <button @click="toggleLock">
-      <img :src="!isLocked ? '/img/unlock_padlock.png' : '/img/padlock.png'" 
-           class="iconeBoxImage" 
-           alt="toggle lock">
+      <img
+        :src="!isLocked ? '/img/unlock_padlock.png' : '/img/padlock.png'"
+        class="iconeBoxImage"
+        alt="toggle lock"
+      />
     </button>
   </div>
-</template> 
+</template>
 
 <script lang="ts">
 import { chain } from '../../multichain'
-import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue'
 import { getGas } from '../../getGas'
-import { Network } from 'alchemy-sdk';
 
 export default defineComponent({
   name: 'HeaderMenu',
   setup() {
-
     if (!sessionStorage.getItem('lock-wallet')) {
-      sessionStorage.setItem('lock-wallet', 'true');
+      sessionStorage.setItem('lock-wallet', 'true')
     }
-    
-    const isLocked = ref(sessionStorage.getItem('lock-wallet') === "true");
 
-    const gasValue = ref<string | null>(null);
-    let intervalId: NodeJS.Timeout | undefined;
+    const isLocked = ref(sessionStorage.getItem('lock-wallet') === 'true')
+
+    const gasValue = ref<string | null>(null)
+    let intervalId: NodeJS.Timeout | undefined
 
     const toggleLock = () => {
-      isLocked.value = !isLocked.value;
+      isLocked.value = !isLocked.value
       sessionStorage.setItem('lock-wallet', String(isLocked.value))
-    };
+    }
 
     const fetchGasPrice = async () => {
-      gasValue.value = await getGas(chain.value.alchemyNetwork);
-    };
+      gasValue.value = await getGas(chain.value.alchemyNetwork)
+    }
 
     onMounted(() => {
-      fetchGasPrice();
-      intervalId = setInterval(fetchGasPrice, 5000);
-    });
+      fetchGasPrice()
+      intervalId = setInterval(fetchGasPrice, 5000)
+    })
 
     onBeforeUnmount(() => {
-      if (intervalId)
-        clearInterval(intervalId);
-    });
+      if (intervalId) clearInterval(intervalId)
+    })
 
     return {
       gasValue,
       isLocked,
       toggleLock
-    };
+    }
   }
-});
+})
 </script>
 
 <style scoped>

@@ -1,21 +1,26 @@
 <template>
-    <div id="password-page">
-        <img src="/img/PrettyMetaMask.png" alt="PrettyMetaMask Logo" class="logo">
-        <div v-if="havePassword">
-            <h1 class="title">Enter your Password</h1>
-            <input type="password" @keyup.enter="submitPassword" v-model="password" placeholder="Password" />
-            <button class="btn" @click="submitPassword">Enter</button>
-        </div>
-        <div v-else>
-            <h1 class="title">Create your Password</h1>
-            <input type="password" v-model="password" placeholder="Password" />
-            <button class="btn" @click="createPassword">Create</button>
-        </div>
+  <div id="password-page">
+    <img src="/img/PrettyMetaMask.png" alt="PrettyMetaMask Logo" class="logo" />
+    <div v-if="havePassword">
+      <h1 class="title">Enter your Password</h1>
+      <input
+        type="password"
+        @keyup.enter="submitPassword"
+        v-model="password"
+        placeholder="Password"
+      />
+      <button class="btn" @click="submitPassword">Enter</button>
     </div>
+    <div v-else>
+      <h1 class="title">Create your Password</h1>
+      <input type="password" v-model="password" placeholder="Password" />
+      <button class="btn" @click="createPassword">Create</button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import CryptoJS from 'crypto-js'
 import { useStore } from 'vuex'
 
@@ -25,36 +30,36 @@ const havePassword = ref(false)
 const emit = defineEmits(['isOpen'])
 
 const createPassword = () => {
-    const hashedPassword = CryptoJS.SHA256(password.value).toString()
-    localStorage.setItem('password', hashedPassword)
-    localStorage.setItem('open-wallet', 'true')
+  const hashedPassword = CryptoJS.SHA256(password.value).toString()
+  localStorage.setItem('password', hashedPassword)
+  localStorage.setItem('open-wallet', 'true')
 
-    store.dispatch('addPassword', password.value)
-    emit('isOpen')
+  store.dispatch('addPassword', password.value)
+  emit('isOpen')
 }
 
 const submitPassword = () => {
-    const storedPassword = localStorage.getItem('password')
-    if (!storedPassword) {
-        alert('No password set')
-        return
-    }
-    const hashedInputPassword = CryptoJS.SHA256(password.value).toString()
-    if (hashedInputPassword === storedPassword) {
-        localStorage.setItem('open-wallet', 'true')
-        emit('isOpen')
-        store.dispatch('addPassword', password.value)
-    } else {
-        alert('Incorrect password')
-        password.value = ''
-    }
+  const storedPassword = localStorage.getItem('password')
+  if (!storedPassword) {
+    alert('No password set')
+    return
+  }
+  const hashedInputPassword = CryptoJS.SHA256(password.value).toString()
+  if (hashedInputPassword === storedPassword) {
+    localStorage.setItem('open-wallet', 'true')
+    emit('isOpen')
+    store.dispatch('addPassword', password.value)
+  } else {
+    alert('Incorrect password')
+    password.value = ''
+  }
 }
 
 onMounted(() => {
-    const storedPassword = localStorage.getItem('password')
-    if (storedPassword) {
-        havePassword.value = true
-    }
+  const storedPassword = localStorage.getItem('password')
+  if (storedPassword) {
+    havePassword.value = true
+  }
 })
 </script>
 
@@ -66,7 +71,7 @@ onMounted(() => {
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  background-color: #1E1E1E;
+  background-color: #1e1e1e;
   padding: 20px;
 }
 
@@ -76,7 +81,7 @@ onMounted(() => {
 }
 
 .title {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 30px;
   margin-bottom: 20px;
   font-weight: bold;
@@ -84,25 +89,25 @@ onMounted(() => {
   letter-spacing: 1.5px;
 }
 
-input[type="password"] {
+input[type='password'] {
   width: 300px;
   padding: 15px;
   font-size: 16px;
-  border: 2px solid #4CAF50;
+  border: 2px solid #4caf50;
   border-radius: 8px;
   outline: none;
   margin-bottom: 20px;
-  background-color: #2C2C2C;
+  background-color: #2c2c2c;
   color: white;
   transition: border-color 0.3s;
 }
 
-input[type="password"]:focus {
-  border-color: #6FFF78;
+input[type='password']:focus {
+  border-color: #6fff78;
 }
 
 .btn {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   padding: 15px 30px;
@@ -111,11 +116,13 @@ input[type="password"]:focus {
   border-radius: 30px;
   margin-left: 10px;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
 }
 
 .btn:hover {
-  background-color: #45A049;
+  background-color: #45a049;
   transform: translateY(-2px);
 }
 
@@ -125,11 +132,11 @@ input[type="password"]:focus {
 }
 
 input::placeholder {
-  color: #B0B0B0;
+  color: #b0b0b0;
 }
 
 @media (max-width: 768px) {
-  input[type="password"] {
+  input[type='password'] {
     width: 80%;
   }
 

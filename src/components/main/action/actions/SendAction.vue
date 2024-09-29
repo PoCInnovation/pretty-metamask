@@ -15,9 +15,9 @@ const send = async () => {
 </script>
 
 <template>
-  <input v-model="address" placeholder="address"/>
-  <input v-model="amount" placeholder="amount"/>
-  <button v-if="address.startsWith('0x') && amount > 0"  @click="send()">Send</button>
+  <input v-model="address" placeholder="address" />
+  <input v-model="amount" placeholder="amount" />
+  <button v-if="address.startsWith('0x') && amount > 0" @click="send()">Send</button>
   <button v-else @click="$emit('close-dialog')" id="cancelBtn">Cancel</button>
 </template>
 
@@ -35,7 +35,7 @@ input {
 button {
   width: 10vw;
   margin-inline: 10px;
-  background-color: #1E6BDE;
+  background-color: #1e6bde;
 }
 
 button:hover {
@@ -46,7 +46,8 @@ button:active {
   background-color: #1a5cbd;
 }
 
-input, button {
+input,
+button {
   outline: none;
   border: none;
   border-radius: 10px;
