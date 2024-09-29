@@ -12,13 +12,13 @@ import store from './store'
 import { chain } from './multichain'
 
 const ax = axios.create({
-    baseURL: chain.value.alchemyURL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+  baseURL: chain.value.alchemyURL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
 
-export const x = ax;
+export const x = ax
 
 const app = createApp(App)
 app.use(store)
