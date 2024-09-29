@@ -11,8 +11,8 @@ interface Config {
 
 const config: Config = {
   apiKey: import.meta.env.VITE_ALCHEMY_API_KEY,
-  network: chain.value.alchemyNetwork,
-};
+  network: chain.value.alchemyNetwork
+}
 
 interface CoinGeckoToken {
   id: string
@@ -96,8 +96,7 @@ async function setEth(
   balanceTokens: BalanceToken[]
 ) {
   const weiValue = await getBalance(address_ as string)
-  if (weiValue <= 0)
-    return;
+  if (weiValue <= 0) return
 
   map.set('eth', 'ethereum')
 
@@ -115,10 +114,10 @@ async function setEth(
 
 async function getBalances2(address_: `0x${string}`, network: Network): Promise<BalanceToken[]> {
   try {
-    config.network = network;
-    console.log("network is ",network);
-    const alchemy = new Alchemy(config as AlchemyConfig);
-    const balances = await alchemy.core.getTokenBalances(address_);
+    config.network = network
+    console.log('network is ', network)
+    const alchemy = new Alchemy(config as AlchemyConfig)
+    const balances = await alchemy.core.getTokenBalances(address_)
     const nonZeroBalances = balances.tokenBalances.filter((token) => {
       return (
         token.tokenBalance !== '0x0000000000000000000000000000000000000000000000000000000000000000'

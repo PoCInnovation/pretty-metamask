@@ -28,17 +28,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect, watch } from 'vue';
-import { processAll } from '../../../../alchemy';
+import { defineComponent, computed, ref, watchEffect, watch } from 'vue'
+import { processAll } from '../../../../alchemy'
 import { chain } from '../../../../multichain'
-import { useStore } from 'vuex';
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'TokenBalances',
   setup() {
-    const store = useStore();
-    const myChain = computed(() => store.getters.chain);
-    const currentMode = ref(chain.value.alchemyNetwork);
+    const store = useStore()
+    const myChain = computed(() => store.getters.chain)
+    const currentMode = ref(chain.value.alchemyNetwork)
 
     const userAddress = ref('')
     const balances = ref<
@@ -70,12 +70,12 @@ export default defineComponent({
           error.value = 'No address provided.'
           return
         }
-        balances.value = await processAll(addressToUse, currentMode.value);
+        balances.value = await processAll(addressToUse, currentMode.value)
         if (balances.value.length === 0) {
           error.value = `No balances found for the address: ${addressToUse}.`
         }
       } catch (err) {
-        error.value = 'An error occurred while fetching balances.';
+        error.value = 'An error occurred while fetching balances.'
       } finally {
         loading.value = false
       }
@@ -84,10 +84,10 @@ export default defineComponent({
     watch(
       () => chain.value,
       (newChain) => {
-        currentMode.value = newChain.alchemyNetwork; // Update currentMode when chain changes
-        handleButtonClick(); // Optionally refetch balances on chain change
+        currentMode.value = newChain.alchemyNetwork // Update currentMode when chain changes
+        handleButtonClick() // Optionally refetch balances on chain change
       }
-    );
+    )
 
     watchEffect(() => {
       handleButtonClick()

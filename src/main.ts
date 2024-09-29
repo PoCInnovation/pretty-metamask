@@ -11,7 +11,7 @@ import axios from 'axios'
 import store from './store'
 import { chain } from './multichain'
 
-console.log(`baseURL is: ${chain.value.alchemyURL}`);
+console.log(`baseURL is: ${chain.value.alchemyURL}`)
 const ax = axios.create({
   baseURL: chain.value.alchemyURL,
   headers: {
@@ -22,13 +22,12 @@ const ax = axios.create({
 export const x = ax
 
 watch(
-    () => chain.value.alchemyURL,
-    (newURL: string) => {
-      ax.defaults.baseURL = newURL;
-      console.log(`Axios baseURL updated to: ${newURL}`);
-    }
-  );
-  
+  () => chain.value.alchemyURL,
+  (newURL: string) => {
+    ax.defaults.baseURL = newURL
+    console.log(`Axios baseURL updated to: ${newURL}`)
+  }
+)
 
 const app = createApp(App)
 app.use(store)
