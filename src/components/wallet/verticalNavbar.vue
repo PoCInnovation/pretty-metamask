@@ -45,7 +45,7 @@ export default defineComponent({
   methods: {
     ...mapActions(['addAccount', 'selectAccount', 'initializeAccountsFromLocalStorage']),
     addAccountToStore() {
-      const { newWallet, mnemonic, privateKey } = generateWallet(this.walletCounter)
+      const { newWallet, mnemonic, privateKey } = generateWallet(this.walletCounter, this.password)
       const newAccount: Account = {
         name: `Account ${this.walletCounter + 1}`,
         address: newWallet.account.address,
@@ -61,7 +61,9 @@ export default defineComponent({
       }
       this.mnemonic = mnemonic
       this.addAccount(newAccount)
-      this.isMnemonicVisible = true
+      if (this.walletCounter === 1) {
+        this.isMnemonicVisible = true
+      }
       localStorage.setItem(
         `privateKeyAccount${this.walletCounter}`,
         encryption(privateKey, this.password)
