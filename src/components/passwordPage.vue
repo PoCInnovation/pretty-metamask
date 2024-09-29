@@ -1,10 +1,16 @@
 <template>
-  <div @keydown.enter="submitPassword" id="password-page">
-    <img src="/img/PrettyMetaMask.png" alt="PrettyMetaMask Logo" class="logo" />
-    <div v-if="havePassword">
-      <h1 class="title">Enter your Password</h1>
-      <input type="password" v-model="password" placeholder="Password" />
-      <button class="btn" @click="submitPassword">Enter</button>
+    <div id="password-page">
+        <img src="/img/PrettyMetaMask.png" alt="PrettyMetaMask Logo" class="logo">
+        <div v-if="havePassword">
+            <h1 class="title">Enter your Password</h1>
+            <input type="password" @keyup.enter="submitPassword" v-model="password" placeholder="Password" />
+            <button class="btn" @click="submitPassword">Enter</button>
+        </div>
+        <div v-else>
+            <h1 class="title">Create your Password</h1>
+            <input type="password" v-model="password" placeholder="Password" />
+            <button class="btn" @click="createPassword">Create</button>
+        </div>
     </div>
     <div v-else>
       <h1 class="title">Create your Password</h1>

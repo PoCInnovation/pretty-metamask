@@ -48,43 +48,44 @@ watchEffect(async () => {
 </template>
 
 <style scoped>
-#container {
-  padding-block: 30px;
-  padding-inline: 36px;
-  height: 17.2vh;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-#exchange {
-  display: flex;
-  flex-direction: row;
-}
-h1 {
-  color: white;
-  font-size: 30px;
-}
-h2 {
-  color: white;
-  font-size: 18px;
-}
-p {
-  color: #808080;
-  font-size: 18px;
-}
-#arrow {
-  padding-inline: 20px;
-}
-#eth-logo {
-  height: 57px;
-  width: 57px;
-  background-color: white;
-  border-radius: 50px;
-  margin-right: 26px;
-}
-#token {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
+  #container {
+    padding-block:30px;
+    padding-inline: 36px;
+    height: 17.2vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #exchange {
+    display: flex;
+    flex-direction: row;
+  }
+  h1 {
+    color: white;
+    font-size: 30px;
+  }
+  h2 {
+    color: white;
+    font-size: 18px;
+  }
+  p {
+    color: #808080;
+    font-size: 18px;
+  }
+  #arrow {
+    padding-inline: 20px;
+  }
+  #eth-logo {
+    height: 57px;
+    width: 57px;
+    background-color: white;
+    border-radius: 50px;
+    margin-right: 26px;
+    padding: 5px;
+  }
+  #token {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
 </style>

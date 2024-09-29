@@ -1,28 +1,55 @@
 <script setup lang="ts">
-import VerticalNavbar from './components/wallet/verticalNavbar.vue'
-import transactions_container from './components/transaction/transactions_container.vue'
-import ERC from './components/main/ERC/ERC.vue'
-import { onMounted, ref, onUnmounted } from 'vue'
-import passwordPage from './components/passwordPage.vue'
-import chainSwitcher from './components/chainSwitcher.vue'
-import { SwitchChain } from './multichain'
-import { useStore } from 'vuex'
+  import VerticalNavbar from "./components/wallet/verticalNavbar.vue";
+  import transactions_container from "./components/transaction/transactions_container.vue";
+  import ERC from "./components/main/ERC/ERC.vue";
+  import { onMounted, ref, onUnmounted } from "vue";
+  import passwordPage from "./components/passwordPage.vue";
+  import HeaderMenu from "./components/wallet/headerMenu.vue"
+  import chainSwitcher from "./components/chainSwitcher.vue";
+  import { SwitchChain } from "./multichain";
+  import { useStore } from "vuex";
 
 const open = ref(false)
 const store = useStore()
 
-onMounted(() => {
-  const isOpen = localStorage.getItem('open-wallet')
-  if (isOpen === 'true') {
-    open.value = true
-  }
-  // const store = useStore()
-  // SwitchChain(store)
+  onMounted(() => {
+    let isOpen: string | null;
+    if (sessionStorage.getItem('lock-wallet') && store.state.password) {
+      isOpen = localStorage.getItem('open-wallet')
+      if (isOpen === 'true') {
+        open.value = true
+      }
+    } else {
+      isOpen = "false";
+      open.value = false
+    }
+    // const store = useStore()
+    // SwitchChain(store)
 
   setInterval(checkOpen, 5000)
 
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (sessionStorage.getItem('lock-wallet') === 'true') {
+          open.value = false;
+          localStorage.setItem('open-wallet', 'false');
+          store.dispatch('clearPassword')
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    onUnmounted(() => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    });
+  })
+
+  function checkOpen() {
+    const isOpen = localStorage.getItem('open-wallet')
+    if (isOpen === 'true') {
+      open.value = true
+    } else {
       open.value = false
       localStorage.setItem('open-wallet', 'false')
       store.dispatch('clearPassword')
@@ -50,7 +77,10 @@ function checkOpen() {
   <div v-if="open" id="container">
     <header>
       <div class="logo"><h1>✨Pretty-Metamask✨</h1></div>
-      <chainSwitcher />
+      <div class="headerBox">
+        <chainSwitcher />
+        <HeaderMenu />
+      </div>
     </header>
     <main>
       <VerticalNavbar />
@@ -70,41 +100,46 @@ function checkOpen() {
 </template>
 
 <style scoped>
-#container {
-  height: 100vh;
-  background-color: rgb(3, 3, 3);
-}
-header {
-  height: 10vh;
-  background-color: rgb(25, 25, 25);
-  color: white;
-  width: 100vw;
-  border-bottom: 1px solid rgb(3, 3, 3);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5vw;
-}
-.logo {
-  font-size: 2.4rem;
-}
-main {
-  display: flex;
-  flex-direction: row;
-  width: 100vw;
-  height: 90vh;
-}
-#info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-#transactions {
-  width: 27.91vw;
-  height: 80vh;
-  background-color: rgb(25, 25, 25);
-  border-radius: 20px;
-}
+  #container {
+    height: 100vh;
+    background-color: rgb(3, 3, 3);
+  }
+  header {
+    height:10vh;
+    background-color: rgb(25, 25, 25);
+    color: white;
+    width: 100vw;
+    border-bottom: 1px solid rgb(3, 3, 3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5vw;
+  }
+
+  .headerBox {
+    display: flex;
+  }
+
+  .logo {
+    font-size: 2.4rem;
+  }
+  main {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 90vh;
+  }
+  #info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+  #transactions {
+    width: 27.91vw;
+    height: 80vh;
+    background-color: rgb(25, 25, 25);
+    border-radius: 20px;
+  }
 </style>
