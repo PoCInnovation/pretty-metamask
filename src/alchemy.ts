@@ -83,8 +83,7 @@ export const processAll = async (address_: `0x${string}`, network_: Network) => 
         map.set(symbol, value);
     }
   });
-  if (balanceTokens.length > 0)
-    await setEth(address_, map, balanceTokens);
+  await setEth(address_, map, balanceTokens);
   await getTokensValue(map, balanceTokens);
   return balanceTokens.sort((a, b) => {
     const aValue = a.balanceValue ? parseFloat(a.balanceValue) : 0;
@@ -95,6 +94,8 @@ export const processAll = async (address_: `0x${string}`, network_: Network) => 
 
 async function setEth(address_: `0x${string}`, map: Map<string, string>, balanceTokens: BalanceToken[]) {
   const weiValue = await getBalance(address_ as string)
+  if (weiValue <= 0)
+    return;
 
   map.set('eth', 'ethereum');
 

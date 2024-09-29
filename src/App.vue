@@ -14,7 +14,7 @@
 
   onMounted(() => {
     let isOpen: string | null;
-    if (sessionStorage.getItem('lock-wallet')) {
+    if (sessionStorage.getItem('lock-wallet') && store.state.password) {
       isOpen = localStorage.getItem('open-wallet')
       if (isOpen === 'true') {
         open.value = true
