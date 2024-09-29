@@ -13,9 +13,15 @@
   const store = useStore()
 
   onMounted(() => {
-    const isOpen = localStorage.getItem('open-wallet')
-    if (isOpen === 'true') {
-      open.value = true
+    let isOpen: string | null;
+    if (sessionStorage.getItem('lock-wallet')) {
+      isOpen = localStorage.getItem('open-wallet')
+      if (isOpen === 'true') {
+        open.value = true
+      }
+    } else {
+      isOpen = "false";
+      open.value = false
     }
     // const store = useStore()
     // SwitchChain(store)
