@@ -6,7 +6,6 @@ import { onMounted, ref, onUnmounted } from 'vue'
 import passwordPage from './components/passwordPage.vue'
 import HeaderMenu from './components/wallet/headerMenu.vue'
 import chainSwitcher from './components/chainSwitcher.vue'
-import { SwitchChain } from './multichain'
 import { useStore } from 'vuex'
 
 const open = ref(false)

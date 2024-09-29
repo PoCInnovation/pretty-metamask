@@ -5,7 +5,6 @@ export const getNFTsForOwner = async (address: string, baseURL: string) => {
     method: 'GET',
     redirect: 'follow'
   }
-  const apiKey: string = import.meta.env.VITE_ALCHEMY_API_KEY as string
 
   try {
     const response: Response = await fetch(

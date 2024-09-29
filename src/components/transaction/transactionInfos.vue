@@ -23,7 +23,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import btn from './btn.vue'
 import { useStore } from 'vuex'
 
 const props = defineProps({

@@ -1,4 +1,4 @@
-<template>
+trouv<template>
   <div class="box" @click="openPopup()">
     <div class="icone">
       <svg
@@ -96,7 +96,7 @@ interface Transaction {
   }
 }
 
-const transInfos = ref(<Transaction>{
+const transInfos = ref<Transaction>({
   hash: '',
   to: '',
   from: '',
@@ -165,7 +165,7 @@ const getTransactionInfos = async (transactionHash: `0x${string}`) => {
   var transactionInfos: any
   var transactionReceipt: any
   try {
-    var transactionInfos = (
+    transactionInfos = (
       await x.post('/', {
         id: 1,
         jsonrpc: '2.0',
@@ -173,7 +173,7 @@ const getTransactionInfos = async (transactionHash: `0x${string}`) => {
         params: [transactionHash]
       })
     ).data.result
-    var transactionReceipt = (
+    transactionReceipt = (
       await x.post('/', {
         id: 1,
         jsonrpc: '2.0',

@@ -30,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import transaction from './transaction.vue'
 import { ref, computed, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { fromHex } from 'viem'

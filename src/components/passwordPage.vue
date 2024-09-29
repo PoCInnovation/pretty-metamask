@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import CryptoJS from 'crypto-js'
 import { useStore } from 'vuex'
 

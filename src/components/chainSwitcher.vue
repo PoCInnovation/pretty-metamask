@@ -3,7 +3,7 @@
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn m-1">chain : {{ chain.name }}</div>
       <ul tabindex="0" class="dropdown-content menu rounded-box z-[1] w-52 p-2 shadow">
-        <li class="chain" v-for="(c, i) in chainLs" @click="switchChain(i)">
+        <li class="chain" v-for="(c, i) in chainLs" :key="i" @click="switchChain(i)">
           <a>{{ c.name }}</a>
         </li>
       </ul>
