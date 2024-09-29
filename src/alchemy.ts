@@ -1,7 +1,7 @@
-import type { AlchemyConfig } from 'alchemy-sdk'
-import { Network, Alchemy, Utils } from 'alchemy-sdk'
-import { BigNumber } from 'bignumber.js'
-import { client } from './client'
+import type { AlchemyConfig } from "alchemy-sdk";
+import { Network, Alchemy, Utils } from "alchemy-sdk";
+import { BigNumber } from 'bignumber.js';
+import { getBalance } from './getBalance'
 
 interface Config {
   apiKey: string
@@ -64,39 +64,35 @@ type BalanceToken = {
 const options = {
   method: 'GET',
   headers: { accept: 'application/json' }
-}
+};
+
 
 export const processAll = async (address_: `0x${string}`, network_: Network) => {
-  const balanceTokens: BalanceToken[] = await getBalances(address_, network_)
 
-  await updateCoinGeckoTokensValue()
-  const map = new Map<string, string>()
+  const balanceTokens: BalanceToken[] = await getBalances2(address_, network_);
 
-  balanceTokens.forEach((result) => {
-    const symbol = result.symbol.toLowerCase()
-    const value = localStorage.getItem(symbol)
-    console.log(`symbol is ${symbol}, value ${value}`)
+  await updateCoinGeckoTokensValue();
+  const map = new Map<string, string>();
+
+  balanceTokens.forEach(result => {
+    const symbol = result.symbol.toLowerCase();
+    const value = localStorage.getItem(symbol);
+    console.log(`symbol is ${symbol}, value ${value}`);
     if (value !== null) {
-      map.set(symbol, value)
+        map.set(symbol, value);
     }
-  })
-  await setEth(address_, map, balanceTokens)
-  await getTokensValue(map, balanceTokens)
+  });
+  await setEth(address_, map, balanceTokens);
+  await getTokensValue(map, balanceTokens);
   return balanceTokens.sort((a, b) => {
-    const aValue = a.balanceValue ? parseFloat(a.balanceValue) : 0
-    const bValue = b.balanceValue ? parseFloat(b.balanceValue) : 0
-    return bValue - aValue
-  })
+    const aValue = a.balanceValue ? parseFloat(a.balanceValue) : 0;
+    const bValue = b.balanceValue ? parseFloat(b.balanceValue) : 0;
+    return bValue - aValue;
+  });
 }
 
-async function setEth(
-  address_: `0x${string}`,
-  map: Map<string, string>,
-  balanceTokens: BalanceToken[]
-) {
-  const weiValue = await client.getBalance({
-    address: address_
-  })
+async function setEth(address_: `0x${string}`, map: Map<string, string>, balanceTokens: BalanceToken[]) {
+  const weiValue = await getBalance(address_ as string)
 
   map.set('eth', 'ethereum')
 
@@ -112,7 +108,7 @@ async function setEth(
   })
 }
 
-async function getBalances(address_: `0x${string}`, network: Network): Promise<BalanceToken[]> {
+async function getBalances2(address_: `0x${string}`, network: Network): Promise<BalanceToken[]> {
   try {
     config.network = network
     const alchemy = new Alchemy(config as AlchemyConfig)

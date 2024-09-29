@@ -1,23 +1,26 @@
-export const fetchTokenMetadata = async (tokenAddress: string) => {
-  const fetchURL = `https://eth-mainnet.g.alchemy.com/v2/${import.meta.env.VITE_ALCHEMY_API_KEY}`
+import { x } from './main';
 
-  const raw = JSON.stringify({
-    jsonrpc: '2.0',
-    method: 'alchemy_getTokenMetadata',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    params: [`${tokenAddress}`],
-    id: 42
-  })
-  const requestOptions: any = {
-    method: 'POST',
-    body: raw,
-    redirect: 'follow'
+export const fetchTokenMetadata = async (tokenAddress: string) => {
+  const raw = {
+    "jsonrpc": "2.0",
+    "method": "alchemy_getTokenMetadata",
+    "params": [
+      `${tokenAddress}`
+    ],
+    "id": 42
+  };
+
+  try {
+    const response = await x.post("/", raw, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const result = JSON.stringify(response.data.result, null, 2);
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.log('error', error);
+    throw error;
   }
-  fetch(fetchURL, requestOptions)
-    .then((response) => response.json())
-    .then((response) => JSON.stringify(response['result'], null, 2))
-    .then((result) => console.log(result))
-    .catch((error) => console.log('error', error))
-}
+};

@@ -18,22 +18,19 @@
     </div>
     <div class="link">
       <div class="clickable">
-        <h3 @click="walletLink()">View full history on etherscan</h3>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <path
-            d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"
-          />
-        </svg>
+        <h3 @click="walletLink()">View full history on block explorer</h3>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
       </div>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import transactionList from './transactionList.vue'
-import { ref, computed, onMounted, watchEffect } from 'vue'
+import transaction from './transaction.vue'
+import { ref, computed, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { fromHex } from 'viem'
+import { x } from '../../main'
 
 interface Transaction {
   hash: string
@@ -42,20 +39,15 @@ interface Transaction {
   blockNb: number
 }
 
-const store = useStore()
-const account = computed(() => store.getters.selectedAccount)
-const transactionshash = ref<Transaction[]>([])
-const msg = ref('No account')
-
-watchEffect(async () => {
-  if (account.value) {
-    await btn()
-  }
-})
+const store = useStore();
+const account = computed(() => store.getters.selectedAccount);
+const transactionshash = ref<Transaction[]>([]);
+const msg = ref("No account");
+const myChain = computed(() => store.getters.chain);
 
 const walletLink = () => {
   if (account.value) {
-    window.open(`https://sepolia.etherscan.io/address/${account.value}`)
+    window.open(`${myChain.value.chain.chain.blockExplorers.default.url}/address/${account.value}`);
   }
 }
 
@@ -83,9 +75,8 @@ const getLastTransactions = (transactions: Transaction[]): Transaction[] => {
 }
 
 const btn = async () => {
-  if (!account.value) return
-  console.log('account: ', account.value)
-  msg.value = 'Loading transactions...'
+  if (!account.value) return;
+  msg.value = "Loading transactions...";
 
   let transactions = await getTransactionsFrom()
   let ls: Transaction[] = []
@@ -133,8 +124,8 @@ const getTransactionsFrom = async () => {
   })
 
   try {
-    const transactions = (await store.getters.axiosInstance.post('/', data)).data.result.transfers
-    return transactions
+    const transactions = (await x.post('/', data)).data.result.transfers;
+    return transactions;
   } catch (error) {
     return []
   }
@@ -159,16 +150,27 @@ const getTransactionsTo = async () => {
   })
 
   try {
-    const transactions = (await store.getters.axiosInstance.post('/', data)).data.result.transfers
-    return transactions
+    const transactions = (await x.post('/', data)).data.result.transfers;
+    return transactions;
   } catch (error) {
-    return []
+    console.log(error);
+    return [];
   }
 }
 
-onMounted(async () => {
-  await btn()
-})
+watchEffect(async () => {
+  if (myChain.value) {
+    transactionshash.value = [];
+    await btn();
+  }
+});
+
+watchEffect(async () => {
+  if (account.value) {
+    await btn();
+  }
+});
+
 </script>
 
 <style scoped>

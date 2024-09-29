@@ -22,9 +22,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { pubClient } from '../../main'
-import btnTransaction from './btnTransaction.vue'
+import { ref } from 'vue';
+import btn from './btn.vue';
+import { useStore } from 'vuex'
 
 const props = defineProps({
   open: Boolean,
@@ -38,8 +38,9 @@ if (props.data?.logs.receipt.logs.length > 0) {
 }
 
 const isContract = async (address: `0x${string}`) => {
-  const contract = await pubClient.getBytecode({ address: address })
-  return contract != undefined
+    const pubClient = useStore().getter.pubClient
+    const contract = await pubClient.getBytecode({ address: address })
+    return contract != undefined
 }
 
 const checkAddress = async (from: any, to: any) => {
