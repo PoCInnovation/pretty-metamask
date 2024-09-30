@@ -50,14 +50,14 @@ export function generateWalletFromPrivateKey(privateKey: `0x${string}`): WalletC
   })
 }
 
-export function generateWalletFromMnemonic(mnemonic: string[]): {
+export function generateWalletFromMnemonic(mnemonic: string[], password: string): {
   newWallet: WalletClient | null
   privateKey: string | null
 } {
   try {
     const checkStoredMnemonic = localStorage.getItem('storedMnemonic')
     if (!checkStoredMnemonic) {
-      localStorage.setItem('storedMnemonic', mnemonic.join(' '))
+      localStorage.setItem('storedMnemonic', encryption(mnemonic.join(' '), password))
     }
     const seed = mnemonicToSeedSync(mnemonic.join(' '))
     const masterKey = HDKey.fromMasterSeed(seed)

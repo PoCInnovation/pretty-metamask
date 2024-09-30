@@ -82,7 +82,7 @@ export default defineComponent({
     closeImportPopUp(mnemonicWords: string[]) {
       if (mnemonicWords && mnemonicWords.every((word) => word !== '')) {
         console.log('Importing wallet...')
-        const { newWallet, privateKey } = generateWalletFromMnemonic(mnemonicWords)
+        const { newWallet, privateKey } = generateWalletFromMnemonic(mnemonicWords, this.password)
         if (newWallet === null) {
           this.isImportVisible = false
           return
