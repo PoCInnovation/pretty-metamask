@@ -28,7 +28,7 @@ async function swap({fromChain, toChain, fromToken, toToken, fromAmount, fromAdd
   const client = createWalletClient({
     chain: mainnet,
     transport: http(),
-    account: privateKeyToAccount('0x327f6444a2954d1f35ba39419eaa04e7942ec44b618296d2e4d93820f67e20ed')
+    account: privateKeyToAccount('')
   })
 
   const quote = await getQuote({
