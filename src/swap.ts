@@ -1,6 +1,4 @@
-import { createWalletClient, http, parseGwei } from 'viem'
-import { mainnet } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts'
+import { type WalletClient } from "viem"
 
 interface quote {
   fromChain: string,
@@ -24,12 +22,7 @@ async function getQuote({fromChain, toChain, fromToken, toToken, fromAmount, fro
   return await response.json();
 }
 
-async function swap({fromChain, toChain, fromToken, toToken, fromAmount, fromAddress}: quote) {
-  const client = createWalletClient({
-    chain: mainnet,
-    transport: http(),
-    account: privateKeyToAccount('')
-  })
+async function swap(wallet: WalletClient, {fromChain, toChain, fromToken, toToken, fromAmount, fromAddress}: quote) {
 
   const quote = await getQuote({
     fromChain: fromChain,
@@ -42,21 +35,14 @@ async function swap({fromChain, toChain, fromToken, toToken, fromAmount, fromAdd
 
   console.log(quote.transactionRequest);
 
-  const tx = await client.sendTransaction({
-    to: quote.transactionRequest.to,
-    data: quote.transactionRequest.data,
-    gasPrice: quote.transactionRequest.gasPrice,
-    gasLimit: quote.transactionRequest.gasLimit,
-  });
+  // const tx = await wallet.sendTransaction({
+  //   account: wallet.account,
+  //   to: quote.transactionRequest.to,
+  //   data: quote.transactionRequest.data,
+  //   gasPrice: quote.transactionRequest.gasPrice,
+  //   gasLimit: quote.transactionRequest.gasLimit,
+  // });
 
-  console.log('Tx:', tx);
+  // console.log('Tx:', tx);
 }
-
-const fromChain = 'ETH';
-const fromToken = 'USDC';
-const toChain = 'POL';
-const toToken = 'USDC';
-const fromAmount = '1000000';
-const fromAddress = '0x418Fb5029dCEB014390BF12718ef3Ca5AB4AC673';
-
-swap({fromChain, toChain, fromToken, toToken, fromAmount, fromAddress}).then(r => console.log(r));
+export { swap }

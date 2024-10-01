@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useStore } from 'vuex';
 import UserActionsDialog from './UserActionsDialog.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { swap } from '../../../swap'
 
 const isAction = ref(false);
 const typeOfAction = ref('');
@@ -9,13 +11,31 @@ const manageDialog = (type: string) => {
   isAction.value = !isAction.value;
   typeOfAction.value = type;
 }
+
+const swapToken = () => {
+
+  const store = useStore();
+  const account = computed(() => store.getters.selectedAccount);
+
+  const params = {
+    fromChain: "ETH",
+    toChain: "ETH",
+    fromToken: "USDC",
+    toToken: "ETH",
+    fromAmount: "1000",
+    fromAddress: account.value.address,
+}
+
+  swap(account.value.wallet, params);
+}
+
 </script>
 
 <template>
   <div id="container">
     <div v-if="!isAction" id="btn">
       <button @click="manageDialog('send')">Send</button>
-      <button>Swap</button>
+      <button @click="swapToken">Swap</button>
       <button>Bridge</button>
     </div>
     <UserActionsDialog v-if="isAction" :type="typeOfAction" @close-dialog="manageDialog"/>
