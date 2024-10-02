@@ -1,14 +1,48 @@
 <script setup lang="ts">
-import { sendTransaction } from '@/sendTransaction'
 import { type Ref, ref } from 'vue'
+import BigNumber from 'bignumber.js';
+import { useStore } from 'vuex'
+import { computed } from 'vue'
+import { sepolia } from 'viem/chains';
 
 const emit = defineEmits(['close-dialog'])
 const address: Ref<string> = ref('')
 const amount: Ref<number> = ref(0)
 
+const store = useStore()
+
+const getSelectedWallet = (wallets: any, address: string) => {
+  for (const wallet of wallets) {
+    if (wallet.address === address) {
+      return wallet.wallet
+    }
+  }
+}
+
+const sendTransaction = async (to: `0x${string}`, value: BigNumber): Promise<`0x${string}`> => {
+  const accounts = computed(() => store.getters.accounts)
+  const account = store.getters.selectedAccount
+  const walClient = getSelectedWallet(accounts.value, account)
+  walClient.account.chain = sepolia
+  walClient.chain = sepolia
+  
+  if (!account || !walClient) {
+    throw new Error('Account or Wallet Client not available')
+  }
+  
+  console.log(walClient)
+  const weiVal = new BigNumber(value).multipliedBy(new BigNumber(10).pow(18))
+  return await walClient.sendTransaction({
+    account: walClient.account,
+    to: to,
+    value: weiVal.toString(),
+  })
+}
+
 const send = async () => {
   if (address.value.startsWith('0x') && amount.value > 0) {
-    console.log(await sendTransaction(address.value, BigInt(amount.value)))
+    const amountBigNumber = new BigNumber(amount.value);
+    console.log(await sendTransaction(address.value as `0x${string}`, amountBigNumber))
     emit('close-dialog')
   }
 }

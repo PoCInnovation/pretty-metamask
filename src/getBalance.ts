@@ -5,7 +5,6 @@ export const getBalance = async (address: string): Promise<bigint> => {
     return BigInt(0)
   }
   try {
-    console.log(`adress : ${address}, resquest : ${x}`)
     const response = await x.post('/', {
       jsonrpc: '2.0',
       method: 'eth_getBalance',
