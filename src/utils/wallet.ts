@@ -3,6 +3,7 @@ import { mnemonicToSeedSync } from '@scure/bip39'
 import { createWalletClient, http, type WalletClient } from 'viem'
 import { privateKeyToAccount, generateMnemonic, english } from 'viem/accounts'
 import { mainnet } from 'viem/chains'
+import { decryption, encryption } from './crypto'
 
 function uint8ToHexString(uint8Array: Uint8Array | null): `0x${string}` {
   if (uint8Array === null) return `0x` as `0x${string}`
@@ -12,12 +13,20 @@ function uint8ToHexString(uint8Array: Uint8Array | null): `0x${string}` {
   return `0x${hexString}` as `0x${string}`
 }
 
-export function generateWallet(walletNumber: number): {
+export function generateWallet(walletNumber: number, password: string): {
   newWallet: WalletClient
   mnemonic: string
   privateKey: string
 } {
-  const mnemonic = generateMnemonic(english)
+  const storedMnemonic = localStorage.getItem('storedMnemonic')
+  let mnemonic: string
+  if (!storedMnemonic) {
+    const mnemonic = generateMnemonic(english)
+    const encryptedMnemonic = encryption(mnemonic, password)
+    localStorage.setItem('storedMnemonic', encryptedMnemonic)
+  } else {
+    mnemonic = decryption(storedMnemonic, password)
+  }
   const seed = mnemonicToSeedSync(mnemonic)
   const masterKey = HDKey.fromMasterSeed(seed)
   const privateKeyUint8 = masterKey.derive(`m/44'/60'/0'/0/${walletNumber}`).privateKey
@@ -41,11 +50,15 @@ export function generateWalletFromPrivateKey(privateKey: `0x${string}`): WalletC
   })
 }
 
-export function generateWalletFromMnemonic(mnemonic: string[]): {
+export function generateWalletFromMnemonic(mnemonic: string[], password: string): {
   newWallet: WalletClient | null
   privateKey: string | null
 } {
   try {
+    const checkStoredMnemonic = localStorage.getItem('storedMnemonic')
+    if (!checkStoredMnemonic) {
+      localStorage.setItem('storedMnemonic', encryption(mnemonic.join(' '), password))
+    }
     const seed = mnemonicToSeedSync(mnemonic.join(' '))
     const masterKey = HDKey.fromMasterSeed(seed)
     const privateKeyUint8 = masterKey.derive(`m/44'/60'/0'/0/0`).privateKey
