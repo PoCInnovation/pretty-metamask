@@ -30,7 +30,7 @@ const resetTooltipText = () => {
 
 <style scoped>
 .tooltip-container {
-  position: relative;
+  position: inherit;
   display: inline-block;
 }
 img {

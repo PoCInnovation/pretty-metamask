@@ -42,7 +42,7 @@ onMounted(async () => {
 #add-btn {
   display: flex;
   justify-content: center;
-  position: sticky;
+  position: inherit;
   bottom: 1vh;
 }
 #container {

@@ -32,6 +32,7 @@ export default defineComponent({
   align-items: center;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  
 }
 #btn:hover {
   background-color: #1e6bde;
