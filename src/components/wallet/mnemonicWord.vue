@@ -19,20 +19,23 @@ export default {
   },
   methods: {
     copyWord() {
-      navigator.clipboard.writeText(this.word).then(() => {
-        this.copied = true;
-        setTimeout(() => {
-          this.copied = false;
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
-      });
+      navigator.clipboard
+        .writeText(this.word)
+        .then(() => {
+          this.copied = true
+          setTimeout(() => {
+            this.copied = false
+          }, 2000)
+        })
+        .catch((err) => {
+          console.error('Failed to copy text: ', err)
+        })
     },
     showInfo() {
-      this.showInfo = true;
+      this.showInfo = true
     },
     hideInfo() {
-      this.showInfo = false;
+      this.showInfo = false
     }
   }
 }
@@ -47,10 +50,18 @@ export default {
       @mouseover="showInfo"
       @mouseleave="hideInfo"
     >
-      <div :class="['bg-gray-800 items-center justify-center border border-gray-700 rounded-lg flex py-4 px-12 transition-all', { 'bg-green-500': copied }]">
+      <div
+        :class="[
+          'bg-gray-800 items-center justify-center border border-gray-700 rounded-lg flex py-4 px-12 transition-all',
+          { 'bg-green-500': copied }
+        ]"
+      >
         <span class="text-white text-lg">{{ word }}</span>
       </div>
-      <div v-if="showInfo && !copied" class="absolute bottom-full mb-2 px-2 py-1 bg-black rounded-lg">
+      <div
+        v-if="showInfo && !copied"
+        class="absolute bottom-full mb-2 px-2 py-1 bg-black rounded-lg"
+      >
         <span class="text-xs text-white">Click to copy</span>
       </div>
       <div v-if="copied" class="absolute bottom-full mb-2 px-2 py-1 bg-green-500 rounded-lg">

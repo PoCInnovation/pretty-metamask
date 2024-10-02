@@ -3,7 +3,9 @@
 #app {
   margin: 0 0;
   font-weight: normal;
-  font-family: DM Sans, sans-serif;
+  font-family:
+    DM Sans,
+    sans-serif;
   background-color: rgba(3, 3, 3, 1);
 }
 

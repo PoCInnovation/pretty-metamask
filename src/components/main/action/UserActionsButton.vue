@@ -2,12 +2,12 @@
 import UserActionsDialog from './UserActionsDialog.vue'
 import { ref } from 'vue'
 
-const isAction = ref(false);
-const typeOfAction = ref('');
+const isAction = ref(false)
+const typeOfAction = ref('')
 
 const manageDialog = (type: string) => {
-  isAction.value = !isAction.value;
-  typeOfAction.value = type;
+  isAction.value = !isAction.value
+  typeOfAction.value = type
 }
 </script>
 
@@ -18,33 +18,33 @@ const manageDialog = (type: string) => {
       <button>Swap</button>
       <button>Bridge</button>
     </div>
-    <UserActionsDialog v-if="isAction" :type="typeOfAction" @close-dialog="manageDialog"/>
+    <UserActionsDialog v-if="isAction" :type="typeOfAction" @close-dialog="manageDialog" />
   </div>
 </template>
 
 <style scoped>
-  #btn {
-    display: flex;
-    justify-content: center;
-    padding-inline: 44px;
-  }
-  button {
-    width: 100%;
-    height: 3.9vh;
-    border-radius: 10px;
-    border: none;
-    background-color: #1E6BDE;
-    color: white;
-    font-size: 20px;
-    margin-inline: 10px;
-  }
-  button:hover {
-    cursor: pointer;
-  }
-  button:active {
-    background-color: #1a5cbd;
-  }
-  #container {
-    height: 7.8vh;
-  }
+#btn {
+  display: flex;
+  justify-content: center;
+  padding-inline: 44px;
+}
+button {
+  width: 100%;
+  height: 3.9vh;
+  border-radius: 10px;
+  border: none;
+  background-color: #1e6bde;
+  color: white;
+  font-size: 20px;
+  margin-inline: 10px;
+}
+button:hover {
+  cursor: pointer;
+}
+button:active {
+  background-color: #1a5cbd;
+}
+#container {
+  height: 7.8vh;
+}
 </style>

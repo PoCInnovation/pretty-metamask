@@ -3,12 +3,12 @@ import type { PublicClient, WalletClient } from 'viem'
 import { decryption } from '@/utils/crypto'
 import { generateWalletFromPrivateKey } from '@/utils/wallet'
 import { createPublicClient, http } from 'viem'
-import { switchChain } from 'viem/actions';
-import { chain } from './multichain';
+import { switchChain } from 'viem/actions'
+import { chain } from './multichain'
 
 const pub_client = createPublicClient({
   chain: chain.value.chain,
-  transport: http(),
+  transport: http()
 })
 
 interface Account {
@@ -24,8 +24,8 @@ interface State {
   selectedAccount: string | null
   password: string | null
   walletCounter: number
-  chain: any | null;
-  pubClient: PublicClient;
+  chain: any | null
+  pubClient: PublicClient
 }
 
 const state: State = {
@@ -59,7 +59,7 @@ const mutations = {
   clearPassword(state: State) {
     state.password = null
   },
-  initializeAccountsFromLocalStorage( state: State) {
+  initializeAccountsFromLocalStorage(state: State) {
     let walletCounter = 0
     while (localStorage.getItem(`privateKeyAccount${walletCounter + 1}`)) {
       walletCounter++
@@ -84,16 +84,16 @@ const mutations = {
     }
   },
   switchWalletChain(state: State) {
-    state.accounts.forEach(account => {
-      switchChain(account.wallet, state.chain as typeof pub_client.chain);
-    });
-    state.pubClient.chain = state.chain.chain.chain;
+    state.accounts.forEach((account) => {
+      switchChain(account.wallet, state.chain as typeof pub_client.chain)
+    })
+    state.pubClient.chain = state.chain.chain.chain
   },
   saveChain(state: State, chain: any) {
-    state.chain = chain;
+    state.chain = chain
   },
   savePubClient(state: State, pubClient: any) {
-    state.pubClient = pubClient;
+    state.pubClient = pubClient
   }
 }
 
@@ -105,7 +105,7 @@ const actions = {
     commit('selectAccount', address)
   },
   clearAccounts({ commit }: { commit: Function }) {
-    commit('clearAccounts');
+    commit('clearAccounts')
   },
   addPassword({ commit }: { commit: Function }, password: string) {
     commit('addPassword', password)
@@ -117,21 +117,21 @@ const actions = {
     commit('initializeAccountsFromLocalStorage')
   },
   switchWalletChain({ commit }: { commit: Function }) {
-    commit('switchWalletChain');
+    commit('switchWalletChain')
   },
   saveChain({ commit }: { commit: Function }, chain: any) {
-    commit('saveChain', chain);
+    commit('saveChain', chain)
   },
   savePubClient({ commit }: { commit: Function }, pubClient: any) {
-    commit('savePubClient', pubClient);
+    commit('savePubClient', pubClient)
   }
-};
+}
 
 const getters = {
   accounts: (state: State) => state.accounts,
   selectedAccount: (state: State) => state.selectedAccount,
   accountReducedAddresses: (state: State) => {
-    return state.accounts.map(account => ({
+    return state.accounts.map((account) => ({
       ...account,
       reducedAddress: `${account.address.slice(0, 7)}...${account.address.slice(-5)}`
     }))
@@ -139,7 +139,7 @@ const getters = {
   password: (state: State) => state.password,
   walletCounter: (state: State) => state.walletCounter,
   chain: (state: State) => state.chain,
-  pubClient: (state: State) => state.pubClient,
+  pubClient: (state: State) => state.pubClient
 }
 
 const store = createStore({
