@@ -3,7 +3,6 @@ import { type Ref, ref } from 'vue'
 import BigNumber from 'bignumber.js';
 import { useStore } from 'vuex'
 import { computed } from 'vue'
-import { sepolia } from 'viem/chains';
 
 const emit = defineEmits(['close-dialog'])
 const address: Ref<string> = ref('')
@@ -23,8 +22,6 @@ const sendTransaction = async (to: `0x${string}`, value: BigNumber): Promise<`0x
   const accounts = computed(() => store.getters.accounts)
   const account = store.getters.selectedAccount
   const walClient = getSelectedWallet(accounts.value, account)
-  walClient.account.chain = sepolia
-  walClient.chain = sepolia
   
   if (!account || !walClient) {
     throw new Error('Account or Wallet Client not available')
