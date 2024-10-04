@@ -191,6 +191,7 @@ main.transactions {
 .list {
   width: 100%;
   height: calc(100% - 120px);
+  overflow: scroll;
 }
 
 .title {
