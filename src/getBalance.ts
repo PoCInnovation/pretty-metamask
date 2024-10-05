@@ -1,8 +1,8 @@
-import { x } from "./main";
+import { x } from './main'
 
 export const getBalance = async (address: string): Promise<bigint> => {
   if (address === '' || address == undefined) {
-    return BigInt(0);
+    return BigInt(0)
   }
   try {
     const response = await x.post('/', {
@@ -10,15 +10,15 @@ export const getBalance = async (address: string): Promise<bigint> => {
       method: 'eth_getBalance',
       params: [address, 'latest'],
       id: 1
-    });
+    })
 
     if (response.data.result) {
-      return BigInt(response.data.result);
+      return BigInt(response.data.result)
     } else {
-      throw new Error('Failed to get balance');
+      throw new Error('Failed to get balance')
     }
   } catch (error) {
-    console.error('Error fetching balance:', error);
-    throw error;
+    console.error('Error fetching balance:', error)
+    throw error
   }
 }
