@@ -14,7 +14,7 @@ export const addImportedNFTs = (NFT: any): boolean => {
 }
 
 const errorHandling = (NFTsList: any, NFT: any): boolean => {
-  const isAlreadyImported = NFTsList.some((existingNFT: any) => existingNFT.name === NFT.name)
+  const isAlreadyImported = NFTsList.some((existingNFT: any) => existingNFT.contract.address === NFT.contract.address && existingNFT.tokenId === NFT.tokenId)
   if (isAlreadyImported) {
     return true
   }
