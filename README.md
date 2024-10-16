@@ -19,7 +19,22 @@ npm run dev
 
 ### Usage
 
-Create or import a wallet, connect to it, and interact with the blockchain
+- **Wallets**
+  - Create a wallet
+  - Import a wallet
+- **Tokens**
+  - See your tokens
+  - See their price
+- **Transactions**
+  - See all your past transactions
+  - Get details of a transactions
+- **NFTs**
+  - See your NFTs
+  - import an NFT
+- **Other**
+  - Is multichain
+  - live gas price
+  - Sooo ✨pretty✨
 
 ## Get involved
 
