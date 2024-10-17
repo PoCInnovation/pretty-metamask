@@ -10,6 +10,8 @@ import { type Chain } from 'viem/chains';
 const emit = defineEmits(['close-dialog'])
 const address: Ref<string> = ref('')
 const amount: Ref<number> = ref(0)
+const tokenfrom = ref('')
+const tokento = ref('')
 
 const store = useStore()
 
@@ -57,32 +59,65 @@ const sendTransaction = async (to: `0x${string}`, value: BigNumber): Promise<`0x
 }
 
 const send = async () => {
-  if (address.value.startsWith('0x') && amount.value > 0) {
-    const amountBigNumber = new BigNumber(amount.value);
-    console.log(await sendTransaction(address.value as `0x${string}`, amountBigNumber))
-    emit('close-dialog')
-    store.dispatch('refreshPage')
-  }
+//   if (address.value.startsWith('0x') && amount.value > 0) {
+//     const amountBigNumber = new BigNumber(amount.value);
+//     console.log(await sendTransaction(address.value as `0x${string}`, amountBigNumber))
+// }
+emit('close-dialog')
 }
 </script>
 
 <template>
-  <input v-model="address" placeholder="address" />
-  <input v-model="amount" placeholder="amount" />
-  <button v-if="address.startsWith('0x') && amount > 0" @click="send()">Send</button>
-  <button v-else @click="$emit('close-dialog')" id="cancelBtn">Cancel</button>
+    <div class="box">
+        <h1>Swap</h1>
+        <input v-model="tokenfrom" placeholder="Token from (ETH, USDC, ...)" />
+        <input v-model="tokento" placeholder="Token to  (ETH, USDC, ...)" />
+        <input v-model="address" placeholder="To address" />
+        <div class="btns">
+          <button @click="$emit('close-dialog')" id="cancelBtn">Cancel</button>
+          <button @click="send">Swap</button>
+        </div>
+    </div>
 </template>
 
 <style scoped>
+.box {
+    position: absolute;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    background-color: #333333;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+h1 {
+    color: white;
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.btns {
+  margin-top: 15px;
+}
+
 #cancelBtn {
   background-color: #ba0000;
 }
 input {
   margin-inline: 10px;
-  width: 100%;
+  margin: 20px 0;
+  width: 70%;
   height: 3.9vh;
   padding: 10px;
-  background-color: #000000;
+  background-color: #191919;
 }
 button {
   width: 10vw;

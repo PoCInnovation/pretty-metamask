@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect, watch } from 'vue'
 import { useStore } from 'vuex'
 import { getBalance } from '@/getBalance'
 import { exchangeRates } from '@/exchangeRates'
 
 const store = useStore()
+const refresh = computed(() => store.getters.refresh)
 const account = computed(() => store.getters.selectedAccount)
 const balance = ref<number | null>(null)
 const ETH = ref<number | null>(null)
@@ -25,6 +26,12 @@ watchEffect(async () => {
       (res: number) => Number(res) / Number(BigInt(1000000000000000000))
     )
   }
+})
+
+watch(refresh, async () => {
+  balance.value = await getBalance(account.value).then(
+      (res: number) => Number(res) / Number(BigInt(1000000000000000000))
+    )
 })
 </script>
 

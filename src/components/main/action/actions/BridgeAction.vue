@@ -61,7 +61,6 @@ const send = async () => {
     const amountBigNumber = new BigNumber(amount.value);
     console.log(await sendTransaction(address.value as `0x${string}`, amountBigNumber))
     emit('close-dialog')
-    store.dispatch('refreshPage')
   }
 }
 </script>
