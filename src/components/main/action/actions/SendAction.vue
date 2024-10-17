@@ -3,6 +3,9 @@ import { type Ref, ref } from 'vue'
 import BigNumber from 'bignumber.js';
 import { useStore } from 'vuex'
 import { computed } from 'vue'
+import { x } from '../../../../main'
+import { createWalletClient, http } from 'viem';
+import { sepolia } from 'viem/chains';
 
 const emit = defineEmits(['close-dialog'])
 const address: Ref<string> = ref('')
@@ -26,14 +29,30 @@ const sendTransaction = async (to: `0x${string}`, value: BigNumber): Promise<`0x
   if (!account || !walClient) {
     throw new Error('Account or Wallet Client not available')
   }
-  
-  console.log(walClient)
-  const weiVal = new BigNumber(value).multipliedBy(new BigNumber(10).pow(18))
-  return await walClient.sendTransaction({
-    account: walClient.account,
-    to: to,
-    value: weiVal.toString(),
+
+  const wl = createWalletClient({
+    chain: sepolia,
+    transport: http(),
   })
+  const weiVal = new BigNumber(value).multipliedBy(new BigNumber(10).pow(18))
+  const tx = await wl.prepareTransactionRequest({
+    account: walClient.account.address,
+    to: to,
+    value: BigInt(weiVal.toString()),
+  })
+  console.log("tx", tx)
+  const signature = await walClient.account.signTransaction(tx)
+  console.log("signature", signature)
+  console.log(x.defaults.baseURL)
+  var transactionInfos = (
+      await x.post('/', {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'eth_sendRawTransaction',
+        params: [signature]
+      })
+    )
+  return transactionInfos.data.result
 }
 
 const send = async () => {
