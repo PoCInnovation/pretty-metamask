@@ -5,7 +5,7 @@ import { useStore } from 'vuex'
 import { computed } from 'vue'
 import { x } from '../../../../main'
 import { createWalletClient, http } from 'viem';
-import { sepolia } from 'viem/chains';
+import { type Chain } from 'viem/chains';
 
 const emit = defineEmits(['close-dialog'])
 const address: Ref<string> = ref('')
@@ -25,13 +25,14 @@ const sendTransaction = async (to: `0x${string}`, value: BigNumber): Promise<`0x
   const accounts = computed(() => store.getters.accounts)
   const account = store.getters.selectedAccount
   const walClient = getSelectedWallet(accounts.value, account)
+  const chain = computed(() => store.getters.chain)
   
   if (!account || !walClient) {
     throw new Error('Account or Wallet Client not available')
   }
 
   const wl = createWalletClient({
-    chain: sepolia,
+    chain: chain.value.chain.chain as Chain,
     transport: http(),
   })
   const weiVal = new BigNumber(value).multipliedBy(new BigNumber(10).pow(18))

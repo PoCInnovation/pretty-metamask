@@ -5,6 +5,7 @@ import { generateWalletFromPrivateKey } from './utils/wallet'
 import { createPublicClient, http } from 'viem'
 import { switchChain } from 'viem/actions'
 import { chain } from './multichain'
+import { type Chain } from 'viem/chains'
 
 const pub_client = createPublicClient({
   chain: chain.value.chain,
@@ -24,7 +25,7 @@ interface State {
   selectedAccount: string | null
   password: string | null
   walletCounter: number
-  chain: any | null
+  chain: Chain | null
   pubClient: PublicClient
 }
 
