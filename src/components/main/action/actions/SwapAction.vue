@@ -13,9 +13,9 @@ import { encodeFunctionData } from 'viem'
 const emit = defineEmits(['close-dialog'])
 
 // base values
-const amount: Ref<number> = ref(0.0001)
-const tokenfrom = ref('USDC')
-const tokento = ref('ETH')
+const amount: Ref<number> = ref(0)
+const tokenfrom = ref('')
+const tokento = ref('')
 const errorMsg = ref('')
 
 const store = useStore()

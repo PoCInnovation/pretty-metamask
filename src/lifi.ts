@@ -47,18 +47,9 @@ async function swap(fromChain: number, fromToken: string, toToken: string, fromA
   });
   console.log(quote.transactionRequest);
   return quote
-  // const tx = await wallet.sendTransaction({
-  //   account: wallet.account,
-  //   to: quote.transactionRequest.to,
-  //   data: quote.transactionRequest.data,
-  //   gasPrice: quote.transactionRequest.gasPrice,
-  //   gasLimit: quote.transactionRequest.gasLimit,
-  // });
-
-  // console.log('Tx:', tx);
 }
 
-async function bridge(wallet: WalletClient, {fromChain, toChain, fromToken, toToken, fromAmount, fromAddress}: quote) {
+async function bridge(fromChain: string, toChain: string, fromToken: string, toToken: string, fromAmount: string, fromAddress: `0x${string}`) {
 
   const quote = await getQuote({
     fromChain: fromChain,
