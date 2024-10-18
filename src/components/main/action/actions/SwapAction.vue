@@ -112,6 +112,11 @@ const sendSwapTx = async (tx: any): Promise<`0x${string}`> => {
 }
 
 const checkParams = () => {
+  const chain = computed(() => store.getters.chain)
+  if (chain.value.chain.chain.testnet) {
+    errorMsg.value = 'Swap is not available on testnet'
+    return false
+  }
   if (amount.value == 0) {
     errorMsg.value = 'Amount must be non-zero'
     return false
