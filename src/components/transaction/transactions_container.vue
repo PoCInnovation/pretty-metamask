@@ -149,7 +149,7 @@ const getTransactionsTo = async () => {
         fromBlock: '0x0',
         toBlock: 'latest',
         fromAddress: account.value,
-        category: ['external', 'internal', 'erc20'],
+        category: ['external', 'erc20'],
         excludeZeroValue: false
       }
     ]

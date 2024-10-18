@@ -73,6 +73,7 @@ const mutations = {
       const encryptedPrivateKey = localStorage.getItem(`privateKeyAccount${i}`)
       if (encryptedPrivateKey && state.password) {
         const privateKey = decryption(encryptedPrivateKey, state.password)
+        // console.log('privateKey wallet', i, " = ", privateKey)
         const wallet = generateWalletFromPrivateKey(privateKey)
 
         const account: Account = {
