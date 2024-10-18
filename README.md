@@ -31,6 +31,9 @@ npm run dev
 - **NFTs**
   - See your NFTs
   - import an NFT
+- **Exchange**
+  - Swap tokens
+  - Bridge tokens
 - **Other**
   - Is multichain
   - live gas price
