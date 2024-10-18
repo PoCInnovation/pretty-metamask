@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Dots3Icon from '../../../assets/3DotsIcon.svg'
+import Refresh_icon from '../../../assets/Refresh.svg'
 import TooltipCopy from './TooltipCopy.vue'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
@@ -11,6 +11,10 @@ const reducedAddress = computed(() => {
     ? `${selectedAccount.value.slice(0, 7)}...${selectedAccount.value.slice(-5)}`
     : null
 })
+
+const refreshPage = () => {
+  store.dispatch('refreshPage')
+}
 </script>
 
 <template>
@@ -26,12 +30,19 @@ const reducedAddress = computed(() => {
         <p>No account selected</p>
       </div>
     </div>
-    <img :src="Dots3Icon" alt="icon" />
+    <img :src="Refresh_icon" alt="icon" class="refresh" @click="refreshPage"/>
   </div>
   <div id="bottomLine" />
 </template>
 
 <style scoped>
+.refresh {
+  color: white;
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+}
+
 #container {
   padding-inline: 42px;
   padding-block: 32px;
