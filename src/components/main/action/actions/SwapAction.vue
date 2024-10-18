@@ -33,7 +33,6 @@ const approveSwap = async (asset: `0x${string}`, spender: `0x${string}`, wallet:
   const account = store.getters.selectedAccount
   const walClient = getSelectedWallet(accounts.value, account)
   const chain = computed(() => store.getters.chain)
-  const pubClient = store.getters.pubClient
   
   if (!account || !walClient) {
     throw new Error('Account or Wallet Client not available')
@@ -78,7 +77,6 @@ const sendSwapTx = async (tx: any): Promise<`0x${string}`> => {
   const account = store.getters.selectedAccount
   const walClient = getSelectedWallet(accounts.value, account)
   const chain = computed(() => store.getters.chain)
-  const pubClient = store.getters.pubClient
   
   if (!account || !walClient) {
     throw new Error('Account or Wallet Client not available')
@@ -89,16 +87,11 @@ const sendSwapTx = async (tx: any): Promise<`0x${string}`> => {
     transport: http(),
   })
   
-  const nonce = await pubClient.getTransactionCount({
-    address: account,
-  })
-  console.log("nonce", nonce, account, pubClient)
   const tx2 = await wl.prepareTransactionRequest({
     account: walClient.account.address,
     to: tx.to,
     value: BigInt(0),
     data: tx.data,
-    nonce: nonce + 1,
   })
   const signature = await walClient.account.signTransaction(tx2)
   console.log("signature", signature)
@@ -157,7 +150,7 @@ const send = async () => {
     if (resAp == '0x0') {
       return
     }
-    // wait approval
+    await new Promise(resolve => setTimeout(resolve, 1000))
   }
   const resSwap = await sendSwapTx(res.transactionRequest)
   if (resSwap == '0x0') {
