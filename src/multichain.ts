@@ -1,4 +1,4 @@
-import { sepolia, mainnet } from 'viem/chains'
+import { sepolia, mainnet, arbitrum } from 'viem/chains'
 import { ref } from 'vue'
 import { x } from './main'
 import { Network } from 'alchemy-sdk'
@@ -19,10 +19,17 @@ const chainLs = [
     alchemyURL: `https://eth-mainnet.g.alchemy.com/v2/${apiKey}`,
     alchemyURLNFT: `https://eth-mainnet.g.alchemy.com/nft/v3/${apiKey}/getNFTsForOwner/`,
     alchemyNetwork: Network.ETH_MAINNET
+  },
+  {
+    name: 'arbitrum',
+    chain: arbitrum,
+    alchemyURL: `https://arb-mainnet.g.alchemy.com/v2/${apiKey}`,
+    alchemyURLNFT: `https://arb-mainnet.g.alchemy.com/nft/v3/${apiKey}/getNFTsForOwner/`,
+    alchemyNetwork: Network.ARB_MAINNET
   }
 ]
 
-const chain = ref(chainLs[0])
+const chain = ref(chainLs[1])
 
 const SwitchChain = (store: any, chainID?: number) => {
   if (chainID != undefined && chainID < chainLs.length) {

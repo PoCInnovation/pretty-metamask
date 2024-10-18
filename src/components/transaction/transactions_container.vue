@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import transaction from './transaction.vue'
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect, watch } from 'vue'
 import { useStore } from 'vuex'
 import { fromHex } from 'viem'
 import { x } from '../../main'
@@ -45,6 +45,7 @@ interface Transaction {
 
 const store = useStore()
 const account = computed(() => store.getters.selectedAccount)
+const refresh = computed(() => store.getters.refresh)
 const transactionshash = ref<Transaction[]>([])
 const msg = ref('No account')
 const myChain = computed(() => store.getters.chain)
@@ -121,15 +122,16 @@ const getTransactionsFrom = async () => {
         fromBlock: '0x0',
         toBlock: 'latest',
         toAddress: account.value,
-        category: ['external', 'internal', 'erc20'],
+        category: ['external', 'erc20'],
         excludeZeroValue: false
       }
     ]
   })
 
   try {
-    const transactions = (await x.post('/', data)).data.result.transfers
-    return transactions
+    const transactions = (await x.post('/', data))
+    console.log('transactions result ', transactions)
+    return transactions.data.result.transfers
   } catch (error) {
     return []
   }
@@ -147,7 +149,7 @@ const getTransactionsTo = async () => {
         fromBlock: '0x0',
         toBlock: 'latest',
         fromAddress: account.value,
-        category: ['external', 'internal', 'erc20'],
+        category: ['external', 'erc20'],
         excludeZeroValue: false
       }
     ]
@@ -173,6 +175,10 @@ watchEffect(async () => {
   if (account.value) {
     await btn()
   }
+})
+
+watch(refresh, async () => {
+  await btn()
 })
 </script>
 

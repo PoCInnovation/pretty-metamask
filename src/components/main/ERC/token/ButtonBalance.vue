@@ -39,6 +39,7 @@ export default defineComponent({
     const store = useStore()
     const myChain = computed(() => store.getters.chain)
     const currentMode = ref(chain.value.alchemyNetwork)
+    const refresh = computed(() => store.getters.refresh)
 
     const userAddress = ref('')
     const balances = ref<
@@ -90,6 +91,10 @@ export default defineComponent({
     )
 
     watchEffect(() => {
+      handleButtonClick()
+    })
+
+    watch(refresh, async () => {
       handleButtonClick()
     })
 

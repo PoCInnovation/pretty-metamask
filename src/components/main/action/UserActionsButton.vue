@@ -15,8 +15,8 @@ const manageDialog = (type: string) => {
   <div id="container">
     <div v-if="!isAction" id="btn">
       <button @click="manageDialog('send')">Send</button>
-      <button>Swap</button>
-      <button>Bridge</button>
+      <button @click="manageDialog('swap')">Swap</button>
+      <button @click="manageDialog('bridge')">Bridge</button>
     </div>
     <UserActionsDialog v-if="isAction" :type="typeOfAction" @close-dialog="manageDialog" />
   </div>

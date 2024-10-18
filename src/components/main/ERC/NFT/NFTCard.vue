@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import popUpNFT from '@/components/main/ERC/NFT/PopUpNFT.vue'
+import popUpNFT from './PopUpNFT.vue'
 import { ref } from 'vue'
 
 const props = defineProps(['metadata'])
@@ -21,7 +21,7 @@ const truncate = (str: string, n: number) => (str.length > n ? str.slice(0, n - 
       <source :src="metadata.image.orginialUrl" />
     </video>
     <div>
-      <p id="title">{{ metadata.name }}</p>
+      <p id="title">{{ metadata.name || metadata.contract.name }}</p>
       <p id="desc" v-if="metadata.description">{{ truncate(metadata.description, 100) }}</p>
     </div>
   </div>

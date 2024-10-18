@@ -5,6 +5,7 @@ import { generateWalletFromPrivateKey } from './utils/wallet'
 import { createPublicClient, http } from 'viem'
 import { switchChain } from 'viem/actions'
 import { chain } from './multichain'
+import { type Chain } from 'viem/chains'
 
 const pub_client = createPublicClient({
   chain: chain.value.chain,
@@ -24,8 +25,9 @@ interface State {
   selectedAccount: string | null
   password: string | null
   walletCounter: number
-  chain: any | null
+  chain: Chain | null
   pubClient: PublicClient
+  refresh: number
 }
 
 const state: State = {
@@ -34,7 +36,8 @@ const state: State = {
   chain: chain.value.chain,
   pubClient: pub_client,
   password: null,
-  walletCounter: 0
+  walletCounter: 0,
+  refresh: 0
 }
 
 const mutations = {
@@ -70,6 +73,7 @@ const mutations = {
       const encryptedPrivateKey = localStorage.getItem(`privateKeyAccount${i}`)
       if (encryptedPrivateKey && state.password) {
         const privateKey = decryption(encryptedPrivateKey, state.password)
+        // console.log('privateKey wallet', i, " = ", privateKey)
         const wallet = generateWalletFromPrivateKey(privateKey)
 
         const account: Account = {
@@ -94,6 +98,9 @@ const mutations = {
   },
   savePubClient(state: State, pubClient: any) {
     state.pubClient = pubClient
+  },
+  refreshPage(state: State) {
+    state.refresh = state.refresh + 1
   }
 }
 
@@ -124,6 +131,9 @@ const actions = {
   },
   savePubClient({ commit }: { commit: Function }, pubClient: any) {
     commit('savePubClient', pubClient)
+  },
+  refreshPage({ commit }: { commit: Function }) {
+    commit('refreshPage')
   }
 }
 
@@ -139,7 +149,8 @@ const getters = {
   password: (state: State) => state.password,
   walletCounter: (state: State) => state.walletCounter,
   chain: (state: State) => state.chain,
-  pubClient: (state: State) => state.pubClient
+  pubClient: (state: State) => state.pubClient,
+  refresh: (state: State) => state.refresh
 }
 
 const store = createStore({

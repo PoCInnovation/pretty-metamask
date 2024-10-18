@@ -1,0 +1,263 @@
+<script setup lang="ts">
+import { type Ref, ref } from 'vue'
+import BigNumber from 'bignumber.js';
+import { useStore } from 'vuex'
+import { computed } from 'vue'
+import { x } from '../../../../main'
+import { createWalletClient, http } from 'viem';
+import { type Chain } from 'viem/chains';
+import ERC20 from '@openzeppelin/contracts/build/contracts/ERC20.json'
+import { bridge, getAssetInfos } from '../../../../lifi'
+import { encodeFunctionData } from 'viem'
+
+const emit = defineEmits(['close-dialog'])
+
+// base values
+const amount: Ref<number> = ref(0)
+const token = ref('')
+const chainTo = ref('')
+const errorMsg = ref('')
+
+const store = useStore()
+
+const getSelectedWallet = (wallets: any, address: string) => {
+  for (const wallet of wallets) {
+    if (wallet.address === address) {
+      return wallet.wallet
+    }
+  }
+}
+
+const approveBridge = async (asset: `0x${string}`, spender: `0x${string}`, wallet: `0x${string}`, amount: string) => {
+  const accounts = computed(() => store.getters.accounts)
+  const account = store.getters.selectedAccount
+  const walClient = getSelectedWallet(accounts.value, account)
+  const chain = computed(() => store.getters.chain)
+  
+  if (!account || !walClient) {
+    throw new Error('Account or Wallet Client not available')
+  }
+
+  const wl = createWalletClient({
+    chain: chain.value.chain.chain as Chain,
+    transport: http(),
+  })
+  
+  const data =  encodeFunctionData({
+    abi: ERC20.abi,
+    functionName: 'approve',
+    args: [spender, amount]
+  })
+  console.log("approve data", data)
+  const tx = await wl.prepareTransactionRequest({
+    account: walClient.account.address,
+    to: asset,
+    value: BigInt(0),
+    data: data,
+  })
+  const signature = await walClient.account.signTransaction(tx)
+  console.log("signature", signature)
+  var transactionInfos = (
+      await x.post('/', {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'eth_sendRawTransaction',
+        params: [signature]
+      })
+    )
+  if (transactionInfos.data.error) {
+    errorMsg.value = transactionInfos.data.error.message
+    return '0x0'
+  }
+  return transactionInfos.data.result
+}
+
+const sendBridgeTx = async (tx: any): Promise<`0x${string}`> => {
+  const accounts = computed(() => store.getters.accounts)
+  const account = store.getters.selectedAccount
+  const walClient = getSelectedWallet(accounts.value, account)
+  const chain = computed(() => store.getters.chain)
+  
+  if (!account || !walClient) {
+    throw new Error('Account or Wallet Client not available')
+  }
+
+  const wl = createWalletClient({
+    chain: chain.value.chain.chain as Chain,
+    transport: http(),
+  })
+  
+  const tx2 = await wl.prepareTransactionRequest({
+    account: walClient.account.address,
+    to: tx.to,
+    value: BigInt(tx.value),
+    data: tx.data,
+  })
+  const signature = await walClient.account.signTransaction(tx2)
+  console.log("signature", signature)
+  var transactionInfos = (
+      await x.post('/', {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'eth_sendRawTransaction',
+        params: [signature]
+      })
+    )
+  console.log("bridge result", transactionInfos)
+  if (transactionInfos.data.error) {
+    errorMsg.value = transactionInfos.data.error.message
+    return '0x0'
+  }
+  return transactionInfos.data.result
+}
+
+const checkParams = () => {
+  const chain = computed(() => store.getters.chain)
+  if (chain.value.chain.chain.testnet) {
+    errorMsg.value = 'Bridge is not available on testnet'
+    return false
+  }
+  if (amount.value == 0) {
+    errorMsg.value = 'Amount must be non-zero'
+    return false
+  }
+  if (chainTo.value === chain.value.chain.chain.id) {
+    errorMsg.value = 'current chain and destination chain must be different'
+    return false
+  }
+  if (token.value == '' || chainTo.value == '') {
+    errorMsg.value = 'Token must be filled'
+    return false
+  }
+  return true
+}
+
+const send = async () => {
+  errorMsg.value = ''
+  if (!checkParams()) {
+    return
+  }
+  const chain = computed(() => store.getters.chain)
+  const account = computed(() => store.getters.selectedAccount)
+  const chainId = chain.value.chain.chain.id as number
+  const assetInfos = await getAssetInfos(chainId.toString(), token.value)
+  console.log(assetInfos)
+  const weiVal = new BigNumber(amount.value).multipliedBy(new BigNumber(10).pow(assetInfos.decimals))
+  const res = await bridge(chainId.toString(), chainTo.value, token.value, token.value, weiVal.toString(), account.value)
+  if (res.message) {
+    errorMsg.value = res.message
+    return
+  }
+  console.log(res)
+
+  if (token.value !== 'ETH') {
+    const resAp = await approveBridge(assetInfos.address, res.transactionRequest.to, account.value, weiVal.toString())
+    if (resAp == '0x0') {
+      return
+    }
+    await new Promise(resolve => setTimeout(resolve, 1000))
+  }
+  const resSwap = await sendBridgeTx(res.transactionRequest)
+  if (resSwap == '0x0') {
+    return
+  }
+  await new Promise(resolve => setTimeout(resolve, 500))
+  emit('close-dialog')
+  store.dispatch('refreshPage')
+}
+</script>
+
+<template>
+  <div class="back">
+    <div class="box">
+        <h1>Bridge</h1>
+        <input v-model="token" placeholder="Token (ETH, USDC, ...)" />
+        <input v-model="chainTo" placeholder="chain to (POL, ARB, ...)" />
+        <input v-model="amount" placeholder="Amount" />
+        <div class="btns">
+          <button @click="$emit('close-dialog')" id="cancelBtn">Cancel</button>
+          <button @click="send">Bridge</button>
+        </div>
+        <h3 class="errorMs">{{ errorMsg }}</h3>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.back {
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.errorMs {
+  color: red;
+  font-size: 15px;
+  margin-top: 15px
+}
+
+.box {
+    position: absolute;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    background-color: #333333;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+h1 {
+    color: white;
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+.btns {
+  margin-top: 15px;
+}
+
+#cancelBtn {
+  background-color: #ba0000;
+}
+input {
+  margin-inline: 10px;
+  margin: 20px 0;
+  width: 70%;
+  height: 3.9vh;
+  padding: 10px;
+  background-color: #191919;
+}
+button {
+  width: 10vw;
+  margin-inline: 10px;
+  background-color: #1e6bde;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+button:active {
+  background-color: #1a5cbd;
+}
+
+input,
+button {
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 15px;
+}
+</style>

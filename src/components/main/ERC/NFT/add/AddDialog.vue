@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { getNFTMetadata } from '@/getNFTMetadata'
-import { addImportedNFTs } from '@/updateWallet'
-import PopUpNFT from '@/components/main/ERC/NFT/PopUpNFT.vue'
+import { getNFTMetadata } from '../../../../../getNFTMetadata'
+import { addImportedNFTs } from '../../../../../updateWallet'
+import PopUpNFT from '../PopUpNFT.vue'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 
 const emit = defineEmits(['close-dialog'])
-const smartContract = ref('0x0af85e2dee602b0a14d50f4fc1096c2f7fbe60f2')
-const tokenID = ref(102)
+const smartContract = ref('0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D')
+const tokenID = ref(353)
 const metadata = ref(null)
 const error = ref(false)
 const displayImported = ref(false)
+
+const store = useStore()
+const chain = computed(() => store.getters.chain)
+
 const addNFT = async () => {
-  metadata.value = await getNFTMetadata(smartContract.value, tokenID.value, 'eth-mainnet')
-  error.value = addImportedNFTs(metadata.value)
+  metadata.value = await getNFTMetadata(smartContract.value, tokenID.value, chain.value.chain.alchemyNetwork)
+  error.value = await addImportedNFTs(metadata.value)
   if (!error.value) {
     displayImported.value = true
   }

@@ -141,12 +141,12 @@ const getErc20Infos = async (transactionInfos: any, transactionReceipt: any, tra
   try {
     const token = getContract({
       address: transactionReceipt.logs[0].address,
-      abi: ERC20,
+      abi: ERC20.abi,
       client: pubClient
     })
     transInfos.value.devise = await token.read.symbol()
     const logs = await pubClient.getContractEvents({
-      abi: ERC20,
+      abi: ERC20.abi,
       address: transactionReceipt.logs[0].address,
       fromBlock: transactionInfos.blockNumber,
       toBlock: transactionInfos.blockNumber,

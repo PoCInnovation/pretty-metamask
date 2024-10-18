@@ -4,6 +4,12 @@ import { ref } from 'vue'
 const props = defineProps(['visible', 'metadata'])
 console.log(props.metadata)
 const video = ref(false)
+const banner = ref("/img/defaultBanner.png")
+const slug = ref("no name")
+if (props.metadata.collection) {
+  banner.value = props.metadata.collection.bannerImageUrl
+  slug.value = props.metadata.collection.slug
+}
 </script>
 
 <template>
@@ -11,22 +17,22 @@ const video = ref(false)
     <div id="pop-up" @click="$emit('close-popUp')">
       <img
         v-if="!video"
-        :src="props.metadata.collection.bannerImageUrl"
+        :src="banner"
         alt="image"
         id="banner-img"
         @error="video = true"
       />
       <video v-else id="banner-img" loop autoplay muted>
-        <source :src="props.metadata.collection.bannerImageUrl" />
+        <source :src="banner" />
       </video>
       <div id="metadata">
         <div id="text">
-          <p id="collection-title">{{ metadata.collection.slug }} - {{ metadata.tokenId }}</p>
+          <p id="collection-title">collection name : {{ slug }} - token ID : {{ metadata.tokenId }}</p>
           <p id="title">{{ metadata.name }}</p>
           <p id="description">{{ metadata.description }}</p>
           <p id="contract">{{ metadata.contract.address }}</p>
         </div>
-        <img :src="props.metadata.image.originalUrl" alt="image" id="NFT-img" />
+        <img :src="props.metadata.image.originalUrl" alt="image" id="NFT-img"/>
       </div>
     </div>
   </div>
